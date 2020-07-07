@@ -7,7 +7,8 @@ app.use(express.json());
 
 /* router set up */
 
-
+const apiRouter = require('../routes/api/api');
+app.use('/api',apiRouter);
 
 
 module.exports = app;
