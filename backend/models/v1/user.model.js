@@ -10,6 +10,7 @@ const userSchema = new Schema({
         trim: true,
         minlength:[4,'Username must be at least 4 characters'],
     },
+    passwordHash:{type: String,required: true}
 },{
     timestamps: true,
 });
@@ -23,7 +24,7 @@ userSchema.path('username').validate(async(username)=>{
 
 userSchema.methods.toJSON = function(){
     let obj =  this.toObject()
-    let attrToRemove = ['createdAt','updatedAt','__v']
+    let attrToRemove = ['createdAt','updatedAt','__v','passwordHash']
     attrToRemove.forEach(att => delete obj[att])
     return obj
 }
