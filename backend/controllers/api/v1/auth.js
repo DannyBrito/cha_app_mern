@@ -1,23 +1,6 @@
-const jwt = require('jsonwebtoken')
 const User = require('../../../models/v1/user.model')
 const errorHandler = require('../../../helpers/erroHandler')
-require('dotenv').config()
-
-/****  Auth MiddleWare for any route that need authentification ****/
-exports.authMiddleware = (req, res, next) =>{
-    const token = req.headers.authorization.split(' ')[1]
-    try{
-    const decoded = jwt.verify(token,process.env.JWT_SCRT)
-        req.userAuthData = decoded
-        next() // need to procced from middleware to next action
-    }
-    catch(error){
-        res.status(407).json({
-            msg:'Auth falied'
-        })
-    }
-    
-}
+const jwt = require('jsonwebtoken')
 
 exports.signUp = (req, res) =>{
     
