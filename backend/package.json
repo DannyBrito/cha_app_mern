@@ -12,6 +12,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.21",
     "nodemon": "^2.0.4",
+    "socket.io": "^2.3.0",
     "supertest": "^4.0.2"
   },
   "devDependencies": {},
