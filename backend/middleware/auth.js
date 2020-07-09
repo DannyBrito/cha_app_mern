@@ -10,7 +10,7 @@ module.exports = (req, res, next) =>{
         next() // need to procced from middleware to next action
     }
     catch(error){
-        res.status(407).json({
+        res.status(401).json({
             msg:'Auth falied'
         })
     }

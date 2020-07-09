@@ -31,13 +31,13 @@ exports.logIn = (req, res) =>{
                         if(passwordAuth){
                             const token = jwt.sign({id: user.id},process.env.JWT_SCRT)
                             res.status(200).json({user:user,token})
-                        }else res.status(407).json('Auth Failed')
+                        }else res.status(400).json('Auth Failed')
                     })
                     .catch(err => res.status(400).json(errorHandler(err.errors)))
             }
-            else res.status(407).json('Auth Failed')
+            else res.status(400).json('Auth Failed')
         })
-        .catch(err => res.status(400).json(errorHandler(err.errors)))
+        .catch(err => res.status(400).json('Auth 2 Failed'))
 }
 // 
 
