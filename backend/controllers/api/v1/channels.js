@@ -8,7 +8,6 @@ exports.channel_create = async (req, res) =>{
     const users = [req.body.creator,...req.body.users]
     try{
         const channel = await Channel.create({})
-        console.log(users)
         users.forEach(user => add_user_to_channel(user,channel))
         res.status(200).json({channel,msg:'successfully'})
     }
