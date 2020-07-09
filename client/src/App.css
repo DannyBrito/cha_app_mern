@@ -1,38 +1,70 @@
-.App {
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root, .App {
+  height: 100%;
+  background-color: rgb(6, 65, 92);
+}
+
+.App{
+  display: grid;
+  grid-template: 50px 1fr/ 1fr;
+}
+
+.Navbar {
+  background-color: rgba(22, 9, 9, 0.58);
+  color: aliceblue;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#maincontainer{
+  display: grid;
+  grid-template: 50px 2fr 1fr 2fr 50px / 50px 2fr 2fr 2fr 50px;
+  background-color: royalblue;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.formcontainer{
+  border-radius: 20px;
+  padding: 60px;
+  grid-area: 2 / 3 / 5 / 4;
+  background-color: rgba(255, 255, 255, 0.1);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  -webkit-box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
+  -moz-box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
+  box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
+  /* background-color: ; */
+}
+.formcontainer:hover{
+  background-color: rgba(255, 255, 255, 0.213);
 }
 
-.App-link {
-  color: #61dafb;
+.form{
+  width: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input{
+  display: block;
+  height: 25px;
+  border-radius: 5px;
+  border-width: 0;
+  margin: 5px 0;
+  width: 100%;
+}
+
+.subtn{
+  margin: 25px 0 0 0;
+  background-color: seagreen;
+  border-color: black;
+  border-width: 1px;
+}
+
+.titleForm{
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 10px;
 }
