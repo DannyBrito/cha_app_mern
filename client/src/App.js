@@ -17,7 +17,7 @@ const App = () => {
   const History = useHistory()
 
   useEffect(()=>{
-      autoLogin()
+      // autoLogin()
     }
   ,[])
 
