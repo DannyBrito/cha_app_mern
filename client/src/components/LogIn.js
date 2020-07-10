@@ -1,24 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import io from 'socket.io-client'
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { BASE_URL } from '../helpers/fetch-helpers';
-
-let socket 
 
 const LogIn = (props) => {
     const [username,setUsername] = useState('')
     const [password,setPassword] = useState('')
-
-    useEffect(()=>{
-        socket = io('localhost:5000')
-        console.log(socket)
-        socket.emit('join',{name:'test',channel:'chas'})
-
-        return () =>{
-            socket.emit('disconnect')
-            socket.off()
-        }
-    },[])
 
   const handleSubmit = (e) => {
     e.preventDefault()

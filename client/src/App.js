@@ -2,11 +2,14 @@ import React, {useState, useEffect} from 'react';
 import { Route } from "react-router-dom";
 import {useHistory} from 'react-router';
 import './App.css';
+import io from "socket.io-client"
 import Chat from './components/Chat'
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
-import { BASE_URL } from './helpers/fetch-helpers';
+import { BASE_URL,BASE_URL_SOCKET } from './helpers/fetch-helpers';
 
+
+let socket = io(BASE_URL_SOCKET);
 const App = () => {
 
   const [username,setUsername] = useState('')
@@ -14,6 +17,11 @@ const App = () => {
   const History = useHistory()
 
   useEffect(()=>{
+      autoLogin()
+    }
+  ,[])
+
+  const autoLogin = () =>{
     const token = localStorage.getItem('token')
     if(token){
       fetch(BASE_URL + '/auth/auto_login',{
@@ -25,12 +33,9 @@ const App = () => {
         }
       })
       .then(res => res.json())
-      .then(({_id,username}) => {
-        setId(_id)
-        setUsername(username)
-      })
+      .then(({_id,username}) => loggedIn(username,_id))
     }
-  },[])
+  }
 
   const loggedIn = (username, id) =>{
       setId(id)
@@ -40,12 +45,12 @@ const App = () => {
   return (
     <div className="App">
       <div className="Navbar">
-          Hello
+          Welcome {username}
       </div>
       <div id="maincontainer">
       <Route path="/" exact render={() => <LogIn loggedIn={loggedIn} />} />
       <Route path="/signup" exact render={() =><SignUp loggedIn={loggedIn} />}/>
-      <Route path="/chat" render={()=> <Chat id={id} username={username} />} />
+      <Route path="/chat" render={()=> <Chat socket={socket} id={id} username={username} />} />
       </div>
     </div>
   );

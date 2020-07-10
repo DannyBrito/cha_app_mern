@@ -68,3 +68,42 @@ html, body, #root, .App {
   font-size: 50px;
   margin-bottom: 10px;
 }
+
+.feedContainer{
+  grid-area: 2/2/5/3;
+  background-color: rgba(255, 255, 255, 0.68);
+  border-radius: 20px 0px 0px 20px;
+  border: black solid 1px;
+  border-right: transparent;
+  padding: 40px;
+}
+
+.chatbox{
+
+  padding: 40px;
+  grid-area: 2 / 3 / 5 / 4;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0px 20px 20px 0px;
+  border: black solid 1px;
+  border-left: transparent;
+  display: flex;
+  flex-direction: column;
+  /* Main Axis */
+  /* justify-content: center;  */
+  /* Y-axis */
+  /* align-items: stretch; */
+}
+
+.msgBox{
+  flex-grow: 1;
+}
+.typingBox{
+  background-color:  rgba(255, 255, 255, 0.735);
+  padding: 15px;
+  border-style: none;
+  border-radius: 22px;
+  height: 50px;
+}
+.typingBox:focus{
+    outline: none;
+}
