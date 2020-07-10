@@ -1,11 +1,14 @@
 import React from 'react'
 
-const Message = ({user, message}) => {
-
+const Message = ({sender, message, user}) => {
+    
+    const messageOwner = () =>{
+        return (user !== sender)? "message_box" : " message_box own_message"
+    }
 
     return (
-        <div className="message_box">
-            <div className="message_sender">{user ? user : 'Unknow'}:</div>
+        <div className={`${messageOwner()}`}>
+            <div className="message_sender">{sender ? sender : 'Unknow'}:</div>
             <div className="message_content">{message}</div>
         </div>
     )

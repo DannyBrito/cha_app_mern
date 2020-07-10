@@ -33,7 +33,7 @@ const Chat = ({username,socket}) => {
     </div>
     <div className="chatbox">
         <ScrollToBottom className="msgBox">
-          {messages.map(({user,message}) => (<Message user={user} message={message} />))}
+          {messages.map(({user,message}) => (<Message user={username} sender={user} message={message} />))}
         </ScrollToBottom>
         <div className="InputContainer">
         <input placeholder="Type a message..." value={textMsg} onKeyPress={onEnter} onChange={e=>setTextMsg(e.target.value)} type="text" className="typingBox" />

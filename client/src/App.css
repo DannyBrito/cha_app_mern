@@ -163,5 +163,11 @@ html, body, #root, .App {
 
 .message_box{
   min-height: 40px;
-  /* padding: 2px; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.own_message{
+  align-items: flex-end;
 }
