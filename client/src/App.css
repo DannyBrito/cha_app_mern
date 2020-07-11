@@ -154,11 +154,13 @@ html, body, #root, .App {
 }
 .message_content{
   display: inline-block;
+  text-align: justify;
+  background-color: rgb(206, 206, 206);
   max-width: 80%;
   padding: 2px 11px 2px 11px;
   border : rgba(0, 0, 0, 0.084) solid 1px;
   border-radius: 22px;
-  background-color:rgb(247, 246, 246);
+  /* background-color:rgb(247, 246, 246); */
 }
 
 .message_box{
@@ -170,4 +172,9 @@ html, body, #root, .App {
 
 .own_message{
   align-items: flex-end;
+}
+
+.blue_bbl{
+  background-color: rgba(0, 106, 255,1);
+  color: aliceblue;
 }

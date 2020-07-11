@@ -1,15 +1,21 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 
 const Message = ({sender, message, user}) => {
+
+    const [ownership,setOwnership] = useState(false)
     
-    const messageOwner = () =>{
-        return (user !== sender)? "message_box" : " message_box own_message"
+    useEffect(()=>{
+        if(sender === user) setOwnership(true)
+    },[sender,user])
+
+    const messageOwner = (base,owner) =>{
+        return ownership ? base + ' ' + owner : base
     }
 
     return (
-        <div className={`${messageOwner()}`}>
+        <div className={`${messageOwner('message_box','own_message')}`}>
             <div className="message_sender">{sender ? sender : 'Unknow'}:</div>
-            <div className="message_content">{message}</div>
+            <div className={`${messageOwner('message_content','blue_bbl')}`}>{message}</div>
         </div>
     )
 }
