@@ -11,7 +11,7 @@ html, body, #root, .App {
 
 .App{
   display: grid;
-  grid-template: 50px 1fr/ 1fr;
+  grid-template: 50px 1fr/1fr;
 }
 
 .Navbar {
@@ -22,15 +22,16 @@ html, body, #root, .App {
 
 #maincontainer{
   display: grid;
-  grid-template: 50px 2fr 1fr 2fr 50px / 50px 2fr 2fr 2fr 50px;
+  max-height: 95vh;
+  grid-template: 50px 2fr 1fr 2fr 50px / 100px 1fr 3fr 3fr 4fr 2fr 100px;
   background-color: royalblue;
 }
 
 .formcontainer{
   border-radius: 20px;
   padding: 60px;
-  grid-area: 2 / 3 / 5 / 4;
-  background-color: rgba(255, 255, 255, 0.1);
+  grid-area: 2 / 3 / 5 / 5;
+  background-color:#1877f2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,8 +71,8 @@ html, body, #root, .App {
 }
 
 .feedContainer{
-  grid-area: 2/2/5/3;
-  background-color: rgba(255, 255, 255, 0.68);
+  grid-area: 2/3/5/4;
+  background-color: #0048AA;
   border-radius: 20px 0px 0px 20px;
   border: black solid 1px;
   border-right: transparent;
@@ -81,8 +82,9 @@ html, body, #root, .App {
 .chatbox{
 
   padding: 40px;
-  grid-area: 2 / 3 / 5 / 4;
-  background-color: rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+  grid-area: 2 / 4 / 5 / 6;
+  background-color: rgba(255, 255, 255, 1.1);
   border-radius: 0px 20px 20px 0px;
   border: black solid 1px;
   border-left: transparent;
@@ -93,17 +95,86 @@ html, body, #root, .App {
   /* Y-axis */
   /* align-items: stretch; */
 }
+::-webkit-scrollbar {
+  display: none;
+}
 
 .msgBox{
   flex-grow: 1;
+  overflow: scroll;
+  /* max-height: 90%; */
 }
-.typingBox{
-  background-color:  rgba(255, 255, 255, 0.735);
-  padding: 15px;
+.InputContainer{
+  position: relative;
+  margin-top: 10px;
+  background-color:rgb(213, 213, 213);
+  display: flex;
+  /* padding: 15px; */
   border-style: none;
   border-radius: 22px;
   height: 50px;
 }
 .typingBox:focus{
-    outline: none;
+  outline: none;
+}
+.typingBox{
+  background-color: rgb(213, 213, 213);
+  font-size: larger;
+  padding: 15px;
+  width: 90%;
+  border-style: none;
+  border-radius: 22px;
+  height: 50px;
+}
+
+.chatbtn{
+  /* background-color: rgb(213, 213, 213); */
+  position: absolute;
+  right: 0;
+  border-radius: 100%;
+  height: 50px;
+  border: rgb(179, 179, 179) solid 1px;
+  width: 50px;
+  outline: none;
+}
+.chatbtn:hover{
+  color: #57c1eb;
+  background-color: rgba(255, 255, 255, 1);
+  font-weight: bold;
+  border-radius: 100%;
+  height: 50px;
+  border: rgb(179, 179, 179) solid 1px;
+  width: 50px;
+}
+
+.message_sender{
+  color: #0048AA;
+  font-size: small;
+  font-weight: bold;
+}
+.message_content{
+  display: inline-block;
+  text-align: justify;
+  background-color: rgb(206, 206, 206);
+  max-width: 80%;
+  padding: 2px 11px 2px 11px;
+  border : rgba(0, 0, 0, 0.084) solid 1px;
+  border-radius: 22px;
+  /* background-color:rgb(247, 246, 246); */
+}
+
+.message_box{
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.own_message{
+  align-items: flex-end;
+}
+
+.blue_bbl{
+  background-color: rgba(0, 106, 255,1);
+  color: aliceblue;
 }
