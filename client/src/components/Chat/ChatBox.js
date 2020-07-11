@@ -1,6 +1,6 @@
 import React from 'react';
 import Message from './Message';
-import {ScrollToBottom} from 'react-scroll-to-bottom';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 const ChatBox = ({username, messages, textMsg, setTextMsg ,sendMessage}) => {
 
