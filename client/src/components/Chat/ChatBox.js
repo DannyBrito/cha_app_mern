@@ -5,7 +5,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 const ChatBox = ({username, messages, textMsg, setTextMsg ,sendMessage}) => {
 
   const onEnter = e =>{
-    if(e.charCode === 13 && textMsg && textMsg !== '') sendMessage() 
+    if(e.charCode === 13 && textMsg !== '') sendMessage() 
   }
 
   const onSubmit = e =>{
