@@ -7,18 +7,37 @@ import {BASE_URL} from '../helpers/Constants'
 const Chat = ({id,username,socket}) => {
   const [messages,setMessages] =useState([])
   const [textMsg,setTextMsg] = useState('')
-  const [currentChannels,setChannels] = useState({})
+  const [allSubChannels,setAllSubChannels] = useState({})
+  const [currentCh, setCurrentCh] = useState('LobbyGeneral')
   const History = useHistory()
 
   useEffect(()=>{
     
     // if(!id) History.push('/')
     
+    // set Socket Events
     socket.on('message', message =>{
       setMessages(messages => [...messages,message])
     })
 
+    return () =>{
+      socket.emit('disconnect')
+    }
   },[])
+
+  useEffect(()=>{
+    const tempChannels = Object.keys(allSubChannels)
+    if(tempChannels.length){
+      socket.emit('join_channels',{channels:tempChannels},(err)=>{
+        if(err) alert(err)
+      })
+    }
+    else{
+      socket.emit('join_lobby',undefined,(err)=>{
+        if(err) alert(err)
+      })
+    }
+  },[allSubChannels])
 
   useEffect(()=>{
     if(id) fetchChannels()
@@ -31,19 +50,27 @@ const Chat = ({id,username,socket}) => {
         if(!res.ok) throw res
         return res.json()
       })
-      .then(({channels}) => setChannels(channels))
+      .then(({channels}) => {
+        const result = Object.keys(channels)
+        if(result.length){
+        setAllSubChannels(channels)
+        setCurrentCh(result[0])
+        }
+      })
       .catch(console.log)
   }
 
+
+
   const sendMessage = () =>{
-      socket.emit('sendMessage',{user:username,message:textMsg},()=>{
+      socket.emit('sendMessage',{user:username,message:textMsg,room:currentCh},()=>{
         setTextMsg('')
       })
   }
-  console.log(currentChannels)
+  console.log(allSubChannels)
   return (
     <>
-      <ChatSideBar channels={currentChannels} id={id}/>
+      <ChatSideBar channels={allSubChannels} id={id}/>
       <ChatBox 
         username={username} sendMessage={sendMessage} messages={messages}
         textMsg={textMsg} setTextMsg={setTextMsg}
