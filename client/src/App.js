@@ -10,7 +10,7 @@ import Navbar from './containers/Navbar'
 import { BASE_URL,BASE_URL_SOCKET } from './helpers/Constants';
 
 
-let socket = io(BASE_URL_SOCKET);
+const socket = io(BASE_URL_SOCKET);
 
 const App = () => {
 
@@ -19,7 +19,10 @@ const App = () => {
   const History = useHistory()
 
   useEffect(()=>{
-      // autoLogin()
+  
+      // console.log(socket.connected)
+      autoLogin()
+      // if(!id) History.push('/')
     }
   ,[])
 
