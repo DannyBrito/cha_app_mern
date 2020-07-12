@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-
+import ReactEmoji from 'react-emoji'
 const Message = ({sender, message, user}) => {
 
     const [ownership,setOwnership] = useState(false)
@@ -15,7 +15,7 @@ const Message = ({sender, message, user}) => {
     return (
         <div className={`${messageOwner('message_box','own_message')}`}>
             <div className="message_sender">{sender ? sender : 'Unknow'}:</div>
-            <div className={`${messageOwner('message_content','blue_bbl')}`}>{message}</div>
+            <div className={`${messageOwner('message_content','blue_bbl')}`}>{ReactEmoji.emojify(message)}</div>
         </div>
     )
 }

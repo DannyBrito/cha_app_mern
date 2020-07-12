@@ -1,3 +1,9 @@
+
+/* 
+
+  NOTE IF TEXT TRUNCATION BECOMES A PROBLEM KEY TO NOTE ON WHITE-SPACE ATTRIBUTE ON DIV WITH GRID CHILD ELEMETS
+
+*/
 *{
   margin: 0;
   padding: 0;
@@ -70,19 +76,21 @@ html, body, #root, .App {
   margin-bottom: 10px;
 }
 
-.feedContainer{
+.sidebarChat{
+  padding: 40px 0px 40px 0px;
+  min-width: 0;
   grid-area: 2/3/5/4;
   background-color: #0048AA;
   border-radius: 20px 0px 0px 20px;
   border: black solid 1px;
   border-right: transparent;
-  padding: 40px;
 }
 
 .chatbox{
 
   padding: 40px;
   padding-bottom: 20px;
+  min-width: 0;
   grid-area: 2 / 4 / 5 / 6;
   background-color: rgba(255, 255, 255, 1.1);
   border-radius: 0px 20px 20px 0px;
@@ -177,4 +185,28 @@ html, body, #root, .App {
 .blue_bbl{
   background-color: rgba(0, 106, 255,1);
   color: aliceblue;
+}
+
+.group_box_sidebar{
+  padding: 5px;
+  background-color: violet;
+  border: black ridge 1px;
+  height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group_box_members{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: turquoise;
+  max-width: 100%;
+  max-height: 22px;
+  font-size: 20px;
+}
+
+.group_box_new_msg{
+  overflow: hidden;
+  height: 100%;
 }
