@@ -13,15 +13,14 @@ const Chat = ({id,username,socket}) => {
 
   useEffect(()=>{
     
-    // if(!id) History.push('/')
+    socket.open()
     
-    // set Socket Events
     socket.on('message', message =>{
       setMessages(messages => [...messages,message])
     })
 
     return () =>{
-      socket.emit('disconnect')
+      socket.close()
     }
   },[])
 
