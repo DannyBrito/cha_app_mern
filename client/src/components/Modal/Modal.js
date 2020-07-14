@@ -10,7 +10,7 @@ const Modal = (props) =>(
             {props.title}
         </div>
         <div className="modal_content">
-
+            {props.children}
         </div>
         <div className="modal_controllers">
             {props.confirm && <button onClick={props.onConfirm} className="modal_btn"> Confirm</button>}

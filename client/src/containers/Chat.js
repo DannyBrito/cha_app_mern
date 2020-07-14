@@ -12,6 +12,8 @@ const Chat = ({id,username,socket}) => {
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
   const [chatModal,setChatModal] = useState(false)
 
+  const [inputUserField, setInputUserField] = useState('')
+  const [memberSelected, setMemberSelected] = useState([])
   const History = useHistory()
   useEffect(()=>{
     
@@ -80,6 +82,12 @@ const Chat = ({id,username,socket}) => {
   const openModal = () =>{
     setChatModal(true)
   }
+
+  const handleSubmitUser = (e) =>{
+      e.preventDefault()
+      setMemberSelected(prev => [...prev,inputUserField])
+      setInputUserField('')
+  }
  
   return (
     <>
@@ -88,7 +96,19 @@ const Chat = ({id,username,socket}) => {
         username={username} sendMessage={sendMessage} messages={messages}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
-      {chatModal &&<Modal confirm cancel onConfirm={onConfirm} onCancel={onCancel} title='Create New Chat'/>}
+      {chatModal &&
+        <Modal confirm cancel onConfirm={onConfirm} onCancel={onCancel} title='Create New Chat'>
+          <form className='userSearch_form' onSubmit={handleSubmitUser}> 
+            <label htmlFor="user" className="userSearch_text"> Add a user:</label>
+            <input placeholder="Search for User" value={inputUserField} onChange={(e)=>setInputUserField(e.target.value)}
+            className="userSearch_ipt"/>
+            <input type="submit" className="userSearch_button" value="Add User"/>
+          </form>
+          <div className="group_users_selected">
+              {memberSelected.map(mb => <div className="user_box"> {mb} </div>)}
+          </div>
+        </Modal>
+      }
     </>
   );
 }
