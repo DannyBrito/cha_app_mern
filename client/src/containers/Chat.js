@@ -3,25 +3,26 @@ import {useHistory} from 'react-router';
 import ChatBox from '../components/Chat/ChatBox';
 import ChatSideBar from '../components/Chat/ChatSideBar';
 import {BASE_URL} from '../helpers/Constants'
+import Modal from '../components/Modal/Modal';
 
 const Chat = ({id,username,socket}) => {
   const [messages,setMessages] =useState([])
   const [textMsg,setTextMsg] = useState('')
   const [allSubChannels,setAllSubChannels] = useState({})
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
-  const History = useHistory()
+  const [chatModal,setChatModal] = useState(false)
 
+  const History = useHistory()
   useEffect(()=>{
     
-    // if(!id) History.push('/')
-    
-    // set Socket Events
+    socket.open()
+
     socket.on('message', message =>{
       setMessages(messages => [...messages,message])
     })
 
     return () =>{
-      socket.emit('disconnect')
+      socket.close()
     }
   },[])
 
@@ -67,14 +68,27 @@ const Chat = ({id,username,socket}) => {
         setTextMsg('')
       })
   }
-  console.log(allSubChannels)
+
+  const onCancel = () =>{
+   setChatModal(false)
+  }
+
+  const onConfirm = () =>{
+   setChatModal(false)
+  }
+
+  const openModal = () =>{
+    setChatModal(true)
+  }
+ 
   return (
     <>
-      <ChatSideBar channels={allSubChannels} id={id}/>
+      <ChatSideBar openModal={openModal} channels={allSubChannels} id={id}/>
       <ChatBox 
         username={username} sendMessage={sendMessage} messages={messages}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
+      {chatModal &&<Modal confirm cancel onConfirm={onConfirm} onCancel={onCancel} title='Create New Chat'/>}
     </>
   );
 }
