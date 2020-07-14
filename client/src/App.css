@@ -28,7 +28,7 @@ html, body, #root, .App {
 
 #maincontainer{
   display: grid;
-  max-height: 95vh;
+  max-height: calc(100vh - 50px);
   grid-template: 50px 2fr 1fr 2fr 50px / 100px 1fr 3fr 3fr 4fr 2fr 100px;
   background-color: royalblue;
 }
@@ -77,15 +77,29 @@ html, body, #root, .App {
 }
 
 .sidebarChat{
-  padding: 40px 0px 40px 0px;
+  padding: 10px 0px 40px 0px;
   min-width: 0;
   grid-area: 2/3/5/4;
   background-color: #0048AA;
   border-radius: 20px 0px 0px 20px;
   border: black solid 1px;
   border-right: transparent;
+  display: flex;
+  flex-direction: column;
 }
-
+.sidebarChat_header{
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+  padding-right: 15px;
+}
+.sidebarChat_btn{
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 30px;
+  
+}
 .chatbox{
 
   padding: 40px;
