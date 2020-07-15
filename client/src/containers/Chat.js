@@ -4,6 +4,7 @@ import ChatBox from '../components/Chat/ChatBox';
 import ChatSideBar from '../components/Chat/ChatSideBar';
 import {BASE_URL} from '../helpers/Constants'
 import Modal from '../components/Modal/Modal';
+import FormContent from '../components/Modal/FormContent';
 
 const Chat = ({id,username,socket}) => {
   const [messages,setMessages] =useState([])
@@ -15,6 +16,8 @@ const Chat = ({id,username,socket}) => {
   const [inputUserField, setInputUserField] = useState('')
   const [memberSelected, setMemberSelected] = useState([])
   const History = useHistory()
+
+  // Setting Socket
   useEffect(()=>{
     
     socket.open()
@@ -28,6 +31,13 @@ const Chat = ({id,username,socket}) => {
     }
   },[])
 
+  // Checks for User Id otherwise redirected to Login/SignUp if Id presents fetchs Users channels
+  useEffect(()=>{
+    if(id) fetchChannels()
+    else History.push('/')
+  },[id])
+
+  // Socket setting channels for User on any change of channels
   useEffect(()=>{
     const tempChannels = Object.keys(allSubChannels)
     if(tempChannels.length){
@@ -41,11 +51,6 @@ const Chat = ({id,username,socket}) => {
       })
     }
   },[allSubChannels])
-
-  useEffect(()=>{
-    if(id) fetchChannels()
-    else History.push('/')
-  },[id])
 
   const fetchChannels = () =>{
       fetch(BASE_URL + `/channels/user_channels/${id}`)
@@ -62,33 +67,43 @@ const Chat = ({id,username,socket}) => {
       })
       .catch(console.log)
   }
-
-
-
+  // function helper to emit event by socket
   const sendMessage = () =>{
       socket.emit('sendMessage',{user:username,message:textMsg,room:currentCh},()=>{
         setTextMsg('')
       })
   }
 
+  /* -------- MODAL CONTROL -------- */
+  
+  // If cancel within modal
   const onCancel = () =>{
    setChatModal(false)
+   setInputUserField('')
+   setMemberSelected([])
   }
-
+  // when confirmed
   const onConfirm = () =>{
    setChatModal(false)
   }
 
+  // open Modal
   const openModal = () =>{
     setChatModal(true)
   }
 
+  // user find submit for handler
   const handleSubmitUser = (e) =>{
       e.preventDefault()
       setMemberSelected(prev => [...prev,inputUserField])
       setInputUserField('')
   }
- 
+
+  // remove user from group list previous creation
+  const deleteMember = (person) =>{
+    setMemberSelected(prev => prev.filter(mb => mb !== person))
+  }
+  /* -------- () -------- */
   return (
     <>
       <ChatSideBar openModal={openModal} channels={allSubChannels} id={id}/>
@@ -98,15 +113,9 @@ const Chat = ({id,username,socket}) => {
       />
       {chatModal &&
         <Modal confirm cancel onConfirm={onConfirm} onCancel={onCancel} title='Create New Chat'>
-          <form className='userSearch_form' onSubmit={handleSubmitUser}> 
-            <label htmlFor="user" className="userSearch_text"> Add a user:</label>
-            <input placeholder="Search for User" value={inputUserField} onChange={(e)=>setInputUserField(e.target.value)}
-            className="userSearch_ipt"/>
-            <input type="submit" className="userSearch_button" value="Add User"/>
-          </form>
-          <div className="group_users_selected">
-              {memberSelected.map(mb => <div className="user_box"> {mb} </div>)}
-          </div>
+          <FormContent  handleSubmitUser={handleSubmitUser}
+          inputUserField={inputUserField} setInputUserField={setInputUserField} 
+          memberSelected={memberSelected} setMemberSelected={setMemberSelected} deleteMember={deleteMember}/>
         </Modal>
       }
     </>

@@ -40,7 +40,7 @@
     height:70%;
 }
 .modal_controllers{
-    background-color: red;
+    /* background-color: red; */
     flex-grow: 1;
     display: flex;
     align-items: center;
@@ -53,9 +53,10 @@
     border-radius: 10px;
     border: none;
     outline: none;
+    transition-duration: 0.9s;
 }
 .modal_btn:hover{
-    font-size: large;
+    background-color:rgba(73, 155, 221, 0.748);
 }
 
 .userSearch_text{
@@ -78,19 +79,38 @@
     height: 25px;
     padding: 3px;
     transition-duration: 0.4s;
-    border: rgba(0, 0, 0, 0.454) solid 1px;
+    border: rgba(0, 0, 0, 0.454) none 1px;
 }
 .userSearch_button:hover{
     background-color:rgba(73, 155, 221, 0.748);
-    border: rgba(0, 0, 0, 1) solid 1px;
+    /* border: rgba(0, 0, 0, 1) none 1px; */
 }
 
 .group_users_selected{
-    background-color: blueviolet;
-    height: 79%;
+    margin-top: 10px;
+    padding: 1.2rem;
+    background-color: rgba(92, 149, 199, 0.118);
+    height: 90%;
 }
 .user_box{
     display: inline-block;
+    text-align: center;
+    margin: 5px;
+    padding: 1px 1px 3px 4px;
     background-color:rgba(11, 135, 237, 0.673);
-    margin: 2px;
+    border-radius: 24px;
+}
+
+
+.closeIcon {
+    display: inline-block;
+    margin-top: 1px;
+}
+.closeIcon img{
+    padding-top: 1px;
+    height: 15px;
+    opacity: 65%;
+}
+.closeIcon img:hover{
+    opacity: 100%;
 }
