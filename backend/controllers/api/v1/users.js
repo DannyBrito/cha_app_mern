@@ -18,3 +18,11 @@ exports.user_show = (req, res) => {
     .then((user) => res.status(200).json(user))
     .catch(err => res.status(400).json(errorHandler(err)))
 }
+
+exports.user_find_by_name = (req, res) => {
+    User.findOne({username:req.params.username}, '_id username')
+    .then((user) => {
+        if(!user) throw ('User Not Found')
+        return res.status(200).json(user)})
+    .catch(err => res.status(400).json(err))
+}
