@@ -3,8 +3,11 @@ const socketio = require('socket.io')
 const server = require('./server')
 
 const io = socketio(server)
+
+const Message = require('../models/v1/message.model')
  
 io.on('connection',(socket)=>{
+
     console.log('we have a new connection')
 
     socket.on('join_channels',({channels}, callback)=>{
@@ -33,14 +36,16 @@ io.on('connection',(socket)=>{
         callback()
     })
 
-    socket.on('sendMessage',(payload,callback)=>{
+    socket.on('sendMessage',async (payload,callback)=>{
         
         console.log(payload,socket.rooms)
         
-        if(payload.room){
-
-        io.to(payload.room).emit('message',{user:payload.user,message:payload.message})
-        callback()
+        if(payload.channel){
+            const message = await Message.create(payload)
+            await message.populate('author','_id username').execPopulate()
+            console.log(message)
+            io.to(payload.channel).emit('message',message)
+            callback()
         }
     })
 

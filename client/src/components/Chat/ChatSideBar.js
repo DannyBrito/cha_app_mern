@@ -1,5 +1,4 @@
 import React from 'react'
-import ScrollToBottom from 'react-scroll-to-bottom';
 
 const ChatSideBar = ({channels,id,openModal}) =>{
     const renderSideBar = () =>{
@@ -20,12 +19,7 @@ const ChatSideBar = ({channels,id,openModal}) =>{
                 <button className="sidebarChat_btn" onClick={openModal}> <img className="sidebarChat_btn"src="/plus_icon.png"/> </button>
             </div>
             <div className='msgBox'>
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
+                {renderSideBar()}
             </div>
         </div>
     )

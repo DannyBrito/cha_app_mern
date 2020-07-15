@@ -6,10 +6,15 @@ import {BASE_URL} from '../helpers/Constants'
 import Modal from '../components/Modal/Modal';
 import FormContent from '../components/Modal/FormContent';
 
+import {NotificationManager,NotificationContainer} from 'react-notifications'
+import 'react-notifications/lib/notifications.css'
+
 const Chat = ({id,username,socket}) => {
-  const [messages,setMessages] =useState([])
+
+  const [messages,setMessages] =useState({})
   const [textMsg,setTextMsg] = useState('')
   const [allSubChannels,setAllSubChannels] = useState({})
+
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
   const [chatModal,setChatModal] = useState(false)
 
@@ -23,7 +28,14 @@ const Chat = ({id,username,socket}) => {
     socket.open()
 
     socket.on('message', message =>{
-      setMessages(messages => [...messages,message])
+      setMessages(prev => {
+        if(prev[message.channel]){
+          return {...prev,[message.channel]:[...prev[message.channel],message]}
+        }
+        else {
+          return {...prev,[message.channel]:[message]}
+        }
+      })
     })
 
     return () =>{
@@ -50,6 +62,7 @@ const Chat = ({id,username,socket}) => {
         if(err) alert(err)
       })
     }
+
   },[allSubChannels])
 
   const fetchChannels = () =>{
@@ -69,7 +82,7 @@ const Chat = ({id,username,socket}) => {
   }
   // function helper to emit event by socket
   const sendMessage = () =>{
-      socket.emit('sendMessage',{user:username,message:textMsg,room:currentCh},()=>{
+      socket.emit('sendMessage',{author:id,message:textMsg,channel:currentCh},()=>{
         setTextMsg('')
       })
   }
@@ -85,6 +98,24 @@ const Chat = ({id,username,socket}) => {
   // when confirmed
   const onConfirm = () =>{
    setChatModal(false)
+   const userIds = [...memberSelected.map(mb => mb._id)]
+   fetch(BASE_URL +'/channels',{
+      method:'POST',
+      headers:{
+        Accept:'application/json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({creator:id,users:userIds})
+   })
+    .then(res =>{
+    if(!res.ok) throw res
+    return res.json()
+    })
+    .then(({channel}) => {
+        console.log(channel)
+    })
+    .catch(console.log)
+  
   }
 
   // open Modal
@@ -95,20 +126,39 @@ const Chat = ({id,username,socket}) => {
   // user find submit for handler
   const handleSubmitUser = (e) =>{
       e.preventDefault()
-      setMemberSelected(prev => [...prev,inputUserField])
-      setInputUserField('')
+
+      fetchUserId(inputUserField)
+      .then(res => res.json()
+          .then(rs => ({body:rs,ok:res.ok}))
+      )
+      .then(res =>{
+        if(!res.ok) throw(res.body)
+        return res
+      })
+      .then(res => {
+        setMemberSelected(prev => [...prev,res.body])
+        setInputUserField('')
+      })
+      .catch(err =>{
+        setInputUserField('')
+        NotificationManager.error('Couldn\'t add user to chat',err,3000)
+      })
+  }
+
+  const fetchUserId = name => {
+      return fetch(BASE_URL + '/users/find/' + name)
   }
 
   // remove user from group list previous creation
-  const deleteMember = (person) =>{
-    setMemberSelected(prev => prev.filter(mb => mb !== person))
+  const deleteMember = (id) =>{
+    setMemberSelected(prev => [...prev.filter(mb => mb._id !== id)])
   }
   /* -------- () -------- */
   return (
     <>
       <ChatSideBar openModal={openModal} channels={allSubChannels} id={id}/>
       <ChatBox 
-        username={username} sendMessage={sendMessage} messages={messages}
+        username={username} sendMessage={sendMessage} messages={messages[currentCh]?messages[currentCh]:[]}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
       {chatModal &&
@@ -118,6 +168,7 @@ const Chat = ({id,username,socket}) => {
           memberSelected={memberSelected} setMemberSelected={setMemberSelected} deleteMember={deleteMember}/>
         </Modal>
       }
+      <NotificationContainer />
     </>
   );
 }
