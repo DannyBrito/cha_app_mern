@@ -1,9 +1,15 @@
 import React from 'react'
 
-const ChatSideBar = ({channels,id,openModal}) =>{
+const ChatSideBar = ({currentCh,changeCurrentChat, channels,id,openModal}) =>{
+    
+    const selectedChat = id =>{
+        const base = "group_box_sidebar "
+        return (id === currentCh) ? base + "selected_chat" : base
+    }
+    
     const renderSideBar = () =>{
         return Object.keys(channels).map(key =>
-            <div className="group_box_sidebar" key={key}>
+            <div onClick={()=>changeCurrentChat(key)} className={`${selectedChat(key)}`} key={key}>
                 <div className="group_box_members">
                 {channels[key].filter(({user})=>user._id !== id).reduce((acc,{user}) => acc + ' ' + user.username,'')}:
                 </div>

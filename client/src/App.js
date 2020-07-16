@@ -20,7 +20,6 @@ const App = () => {
 
   useEffect(()=>{
   
-      // console.log(socket.connected)
       autoLogin()
       // if(!id) History.push('/')
     }

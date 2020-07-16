@@ -5,7 +5,7 @@ const Message = ({sender, message, user}) => {
     const [ownership,setOwnership] = useState(false)
     
     useEffect(()=>{
-        if(sender.id === user) setOwnership(true)
+        if(sender._id === user.id) setOwnership(true)
     },[sender,user])
 
     const messageOwner = (base,owner) =>{

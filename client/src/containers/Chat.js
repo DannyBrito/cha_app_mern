@@ -26,7 +26,7 @@ const Chat = ({id,username,socket}) => {
   useEffect(()=>{
     
     socket.open()
-
+    socket.emit('self_channel',{id})
     socket.on('message', message =>{
       setMessages(prev => {
         if(prev[message.channel]){
@@ -36,6 +36,10 @@ const Chat = ({id,username,socket}) => {
           return {...prev,[message.channel]:[message]}
         }
       })
+    })
+
+    socket.on('new_channel',()=>{
+        fetchChannels()
     })
 
     return () =>{
@@ -71,11 +75,18 @@ const Chat = ({id,username,socket}) => {
         if(!res.ok) throw res
         return res.json()
       })
-      .then(({channels}) => {
+      .then(({channels,msgs}) => {
+        console.log(msgs)
         const result = Object.keys(channels)
         if(result.length){
         setAllSubChannels(channels)
+        // adding
+        setMessages({...msgs})
+        // 
         setCurrentCh(result[0])
+        }
+        else{
+          NotificationManager.info('You can create new chats','Welcome ' + username)
         }
       })
       .catch(console.log)
@@ -111,8 +122,14 @@ const Chat = ({id,username,socket}) => {
     if(!res.ok) throw res
     return res.json()
     })
-    .then(({channel}) => {
-        console.log(channel)
+    .then((res) => {
+      // not the best option as refetch entire set of data but work-around
+      socket.emit('created_new_channel',{users:userIds},()=>{
+
+      })
+      fetchChannels()
+      setMemberSelected([])
+      setInputUserField('')
     })
     .catch(console.log)
   
@@ -153,12 +170,13 @@ const Chat = ({id,username,socket}) => {
   const deleteMember = (id) =>{
     setMemberSelected(prev => [...prev.filter(mb => mb._id !== id)])
   }
+
   /* -------- () -------- */
   return (
     <>
-      <ChatSideBar openModal={openModal} channels={allSubChannels} id={id}/>
+      <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} openModal={openModal} channels={allSubChannels} id={id}/>
       <ChatBox 
-        username={username} sendMessage={sendMessage} messages={messages[currentCh]?messages[currentCh]:[]}
+        user={{username,id}} sendMessage={sendMessage} messages={messages[currentCh]?messages[currentCh]:[]}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
       {chatModal &&
