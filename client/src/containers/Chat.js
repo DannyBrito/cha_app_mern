@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect,useRef} from 'react';
 import {useHistory} from 'react-router';
 import ChatBox from '../components/Chat/ChatBox';
 import ChatSideBar from '../components/Chat/ChatSideBar';
@@ -10,6 +10,8 @@ import {NotificationManager,NotificationContainer} from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
 
 const Chat = ({id,username,socket}) => {
+
+  const isChatMounted = useRef(true)
 
   const [messages,setMessages] =useState({})
   const [textMsg,setTextMsg] = useState('')
@@ -24,18 +26,19 @@ const Chat = ({id,username,socket}) => {
 
   // Setting Socket
   useEffect(()=>{
-    
     socket.open()
     socket.emit('self_channel',{id})
     socket.on('message', message =>{
-      setMessages(prev => {
-        if(prev[message.channel]){
-          return {...prev,[message.channel]:[...prev[message.channel],message]}
-        }
-        else {
-          return {...prev,[message.channel]:[message]}
-        }
-      })
+      if(isChatMounted.current){
+        setMessages(prev => {
+          if(prev[message.channel]){
+            return {...prev,[message.channel]:[...prev[message.channel],message]}
+          }
+          else {
+            return {...prev,[message.channel]:[message]}
+          }
+        })
+      }
     })
 
     socket.on('new_channel',()=>{
@@ -43,6 +46,7 @@ const Chat = ({id,username,socket}) => {
     })
 
     return () =>{
+      isChatMounted.current = false
       socket.close()
     }
   },[])
@@ -55,18 +59,22 @@ const Chat = ({id,username,socket}) => {
 
   // Socket setting channels for User on any change of channels
   useEffect(()=>{
-    const tempChannels = Object.keys(allSubChannels)
-    if(tempChannels.length){
-      socket.emit('join_channels',{channels:tempChannels},(err)=>{
-        if(err) alert(err)
-      })
+    if(isChatMounted.current){
+      const tempChannels = Object.keys(allSubChannels)
+      if(tempChannels.length){
+        socket.emit('join_channels',{channels:tempChannels},(err)=>{
+          if(err) alert(err)
+        })
+      }
+      else{
+        socket.emit('join_lobby',undefined,(err)=>{
+          if(err) alert(err)
+        })
+      }
     }
-    else{
-      socket.emit('join_lobby',undefined,(err)=>{
-        if(err) alert(err)
-      })
+    return () =>{
+      if(!isChatMounted.current) socket.close()
     }
-
   },[allSubChannels])
 
   const fetchChannels = () =>{
@@ -76,7 +84,6 @@ const Chat = ({id,username,socket}) => {
         return res.json()
       })
       .then(({channels,msgs}) => {
-        console.log(msgs)
         const result = Object.keys(channels)
         if(result.length){
         setAllSubChannels(channels)
