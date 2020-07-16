@@ -3,13 +3,20 @@ const socketio = require('socket.io')
 const server = require('./server')
 
 const io = socketio(server)
+
+const Message = require('../models/v1/message.model')
  
 io.on('connection',(socket)=>{
+
     console.log('we have a new connection')
+    
+    socket.on('self_channel',({id})=>{
+        socket.join(`slf-ch:${id}`)
+    })
 
     socket.on('join_channels',({channels}, callback)=>{
         
-        socket.rooms = {}
+        // socket.rooms = {}
 
         channels.forEach(channel => {
             socket.join(`${channel}`)
@@ -24,24 +31,28 @@ io.on('connection',(socket)=>{
 
     socket.on('join_lobby',(payload, callback)=>{
         
-        socket.rooms = {}
+        // socket.rooms = {}
 
         socket.join('LobbyGeneral')
-
-        console.log(socket.rooms)
 
         callback()
     })
 
-    socket.on('sendMessage',(payload,callback)=>{
-        
-        console.log(payload,socket.rooms)
-        
-        if(payload.room){
+    socket.on('created_new_channel',(payload,callback)=>{
+            payload.users.forEach(id =>{
+                socket.to(`slf-ch:${id}`).emit('new_channel')
+            })
+    })
 
-        io.to(payload.room).emit('message',{user:payload.user,message:payload.message})
-        callback()
+    socket.on('sendMessage',async (payload,callback)=>{
+        
+        if(payload.channel){
+            const message = await Message.create(payload)
+            await message.populate('author','_id username').execPopulate()
+            io.to(payload.channel).emit('message',message)
+            callback()
         }
+        
     })
 
     socket.on('disconnect',()=>{

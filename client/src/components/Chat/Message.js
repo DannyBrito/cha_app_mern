@@ -5,7 +5,7 @@ const Message = ({sender, message, user}) => {
     const [ownership,setOwnership] = useState(false)
     
     useEffect(()=>{
-        if(sender === user) setOwnership(true)
+        if(sender._id === user.id) setOwnership(true)
     },[sender,user])
 
     const messageOwner = (base,owner) =>{
@@ -14,7 +14,7 @@ const Message = ({sender, message, user}) => {
 
     return (
         <div className={`${messageOwner('message_box','own_message')}`}>
-            <div className="message_sender">{sender ? sender : 'Unknow'}:</div>
+            <div className="message_sender">{sender ? sender.username : 'Unknow'}:</div>
             <div className={`${messageOwner('message_content','blue_bbl')}`}>{ReactEmoji.emojify(message)}</div>
         </div>
     )

@@ -2,7 +2,7 @@ import React from 'react';
 import Message from './Message';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-const ChatBox = ({username, messages, textMsg, setTextMsg ,sendMessage}) => {
+const ChatBox = ({user, messages, textMsg, setTextMsg ,sendMessage}) => {
 
   const onEnter = e =>{
     if(e.charCode === 13 && textMsg !== '') sendMessage() 
@@ -15,7 +15,7 @@ const ChatBox = ({username, messages, textMsg, setTextMsg ,sendMessage}) => {
   return (
     <div className="chatbox">
         <ScrollToBottom className="msgBox">
-          {messages.map(({user,message}) => (<Message user={username} sender={user} message={message} />))}
+          {messages.map(({_id,author,message}) => (<Message key={_id} user={user} sender={author} message={message} />))}
         </ScrollToBottom>
         <div className="InputContainer">
             <input placeholder="Type a message..." 

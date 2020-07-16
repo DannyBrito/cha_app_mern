@@ -12,7 +12,13 @@ const FormContent = ({handleSubmitUser,inputUserField,setInputUserField,memberSe
                 <input type="submit" className="userSearch_button" value="Add User"/>
             </form>
             <div className="group_users_selected">
-                {memberSelected.map(mb => <div className="user_box"> {mb} <div onClick={e => deleteMember(mb)} className="closeIcon" > <img src="/close-icon.png"/></div></div>)}
+                {memberSelected.map(({_id,username}) =>
+                <div key={_id} className="user_box"> {username} 
+                    <div onClick={()=> deleteMember(_id)} className="closeIcon" >
+                        <img src="/close-icon.png"/>
+                    </div>
+                </div>
+                )}
             </div>
       </>
     )

@@ -6,7 +6,6 @@ const errorHandler = errors =>{
         result[key]= (errors[key].message)
         if(dateRegex.test(result[key]))result[key] = 'Date is required'
     })
-    console.log(result)
     return result
 }
 

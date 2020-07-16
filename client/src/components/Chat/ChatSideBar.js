@@ -1,10 +1,15 @@
 import React from 'react'
-import ScrollToBottom from 'react-scroll-to-bottom';
 
-const ChatSideBar = ({channels,id,openModal}) =>{
+const ChatSideBar = ({currentCh,changeCurrentChat, channels,id,openModal}) =>{
+    
+    const selectedChat = id =>{
+        const base = "group_box_sidebar "
+        return (id === currentCh) ? base + "selected_chat" : base
+    }
+    
     const renderSideBar = () =>{
         return Object.keys(channels).map(key =>
-            <div className="group_box_sidebar" key={key}>
+            <div onClick={()=>changeCurrentChat(key)} className={`${selectedChat(key)}`} key={key}>
                 <div className="group_box_members">
                 {channels[key].filter(({user})=>user._id !== id).reduce((acc,{user}) => acc + ' ' + user.username,'')}:
                 </div>
@@ -20,12 +25,7 @@ const ChatSideBar = ({channels,id,openModal}) =>{
                 <button className="sidebarChat_btn" onClick={openModal}> <img className="sidebarChat_btn"src="/plus_icon.png"/> </button>
             </div>
             <div className='msgBox'>
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
-            {renderSideBar()}
+                {renderSideBar()}
             </div>
         </div>
     )

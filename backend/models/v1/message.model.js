@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt')
 
 const Schema =  mongoose.Schema;
 const messageSchema = new Schema({
-    user:{
+    author:{
         type:mongoose.Schema.Types.ObjectId, ref: 'User',required: true
     },
     message:{type: String,required: true}
+    ,channel:{type:mongoose.Schema.Types.ObjectId, ref: 'Channel',required: true
+    }
 },{
     timestamps: true,
 });

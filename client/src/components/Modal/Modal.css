@@ -105,6 +105,7 @@
 .closeIcon {
     display: inline-block;
     margin-top: 1px;
+    margin-left: 3px;
 }
 .closeIcon img{
     padding-top: 1px;
