@@ -1,7 +1,7 @@
 import React, {useRef,useEffect} from 'react';
 import Message from './Message';
 
-const ChatBox = ({fetchMore, needToScroll, user, messages, textMsg, setTextMsg ,sendMessage}) => {
+const ChatBox = ({hasMore,fetchMore, needToScroll, user, messages, textMsg, setTextMsg ,sendMessage}) => {
 
   const mesRef = useRef()
 
@@ -10,9 +10,8 @@ const ChatBox = ({fetchMore, needToScroll, user, messages, textMsg, setTextMsg ,
   }
 
   useEffect(()=>{
-    console.log(messages, needToScroll)
+     mesRef.current.reachTop = false
     if(needToScroll && messages.length) scrollToBottom()
-
   },[messages,needToScroll])
   
   const onEnter = e =>{
@@ -24,8 +23,10 @@ const ChatBox = ({fetchMore, needToScroll, user, messages, textMsg, setTextMsg ,
   }
 
   const handleScroll = e =>{
-    if(mesRef.current && mesRef.current.scrollTop < 100 && !mesRef.current.reachTop){
+    if(hasMore && mesRef.current && mesRef.current.scrollTop < 100 && !mesRef.current.reachTop){
+      console.log('here')
        fetchMore()
+      console.log('reaching top')
        mesRef.current.reachTop = true
     }
   }
