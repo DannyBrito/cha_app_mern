@@ -44,11 +44,13 @@ exports.get_users = async (req,res) => {
             other[key] = await getUserFromChannel(key)
         }
         let msgs = {}
+        let totalmsgs = {}
         for(let i = 0; i < req.channels.length; i++){
             const key = req.channels[i].channel
             msgs[key] = (await getChannelMessages(key)).reverse()
+            totalmsgs[key] = (await Message.countDocuments({channel:key}))
         }
-        return res.status(200).json({channels:other,msgs})
+        return res.status(200).json({channels:other,msgs,totalmsgs})
     }
     catch(err){
         res.status(400).json({error:"Error fetching other"})
@@ -57,8 +59,8 @@ exports.get_users = async (req,res) => {
 
 exports.getChannelMessages = async(req,res, next) => {
     const limit = parseInt(req.query.limit)
-    const startIndex = req.startIndex
-    req.result.messages = await getChannelMessages(req.params.channel,limit,startIndex) 
+    const startIndex = parseInt(req.startIndex)
+    req.result.messages = await(await getChannelMessages(req.params.channel,limit,startIndex)).reverse()
 
     res.status(200).json(req.result)
 }
@@ -69,7 +71,7 @@ const getUserFromChannel = async channel => {
     return User_Channel.find({channel},'-_id user').populate('user','_id username')
 }
 
-const getChannelMessages = async (channel,limit = 2,index = 0)=> {
+const getChannelMessages = async (channel,limit = 20,index = 0)=> {
     return Message.find({channel},'_id author message createdAt').sort('-createdAt').limit(limit).skip(index).populate('author','_id username').exec()
 }
 
