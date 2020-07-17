@@ -71,7 +71,7 @@ const getUserFromChannel = async channel => {
     return User_Channel.find({channel},'-_id user').populate('user','_id username')
 }
 
-const getChannelMessages = async (channel,limit = 20,index = 0)=> {
+const getChannelMessages = async (channel,limit = 50,index = 0)=> {
     return Message.find({channel},'_id author message createdAt').sort('-createdAt').limit(limit).skip(index).populate('author','_id username').exec()
 }
 

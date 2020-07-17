@@ -12,6 +12,7 @@ import 'react-notifications/lib/notifications.css'
 const Chat = ({id,username,socket}) => {
 
   const isChatMounted = useRef(true)
+  const needToScroll = useRef(false)
 
   const [messages,setMessages] =useState({})
   const [textMsg,setTextMsg] = useState('')
@@ -20,6 +21,8 @@ const Chat = ({id,username,socket}) => {
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
   const [chatModal,setChatModal] = useState(false)
 
+  const [totalMessagesPerChat, setTotalMessagesPerChat] = useState({})
+  const [pageMessage,setPageMessage] = useState({})
   const [inputUserField, setInputUserField] = useState('')
   const [memberSelected, setMemberSelected] = useState([])
   const History = useHistory()
@@ -50,6 +53,28 @@ const Chat = ({id,username,socket}) => {
       socket.close()
     }
   },[])
+
+  useEffect(()=>{
+
+    if(!messages[currentCh] || !messages[currentCh].length) return
+    const lastMessage = messages[currentCh].slice(-1)[0]
+    if(lastMessage.author._id !== id) needToScroll.current = false
+    else needToScroll.current = true
+    
+  },[id,currentCh,messages])
+
+  // Infinte Scroll
+
+   const fetchMore = () => {
+     if(messages[currentCh].length >= totalMessagesPerChat[currentCh]) return console.log('leaving')
+     fetch(BASE_URL +`/channels/${currentCh}?limit=50&page=${pageMessage[currentCh]+1}`)
+      .then(res => res.json())
+      .then(({messages})=>{
+          needToScroll.current = false
+          setPageMessage(prev=>({...prev,[currentCh]: prev[currentCh] + 1 }))
+          setMessages(prev => ({...prev,[currentCh]:[...messages,...prev[currentCh]]}))
+      })
+   }
 
   // Checks for User Id otherwise redirected to Login/SignUp if Id presents fetchs Users channels
   useEffect(()=>{
@@ -83,12 +108,17 @@ const Chat = ({id,username,socket}) => {
         if(!res.ok) throw res
         return res.json()
       })
-      .then(({channels,msgs}) => {
+      .then(({channels,msgs,totalmsgs}) => {
         const result = Object.keys(channels)
         if(result.length){
         setAllSubChannels(channels)
         // adding
+        setTotalMessagesPerChat(totalmsgs)
+        needToScroll.current = true
         setMessages({...msgs})
+          let tempPages = {}
+          result.forEach(ch => tempPages[ch] = 1)
+          setPageMessage(tempPages)
         // 
         setCurrentCh(result[0])
         }
@@ -178,12 +208,20 @@ const Chat = ({id,username,socket}) => {
     setMemberSelected(prev => [...prev.filter(mb => mb._id !== id)])
   }
 
+  const channelMessagesCompleted = () =>{
+    if(!messages[currentCh]) return false
+    return messages[currentCh].length < totalMessagesPerChat[currentCh]
+  }
+
   /* -------- () -------- */
   return (
     <>
       <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} openModal={openModal} channels={allSubChannels} id={id}/>
       <ChatBox 
-        user={{username,id}} sendMessage={sendMessage} messages={messages[currentCh]?messages[currentCh]:[]}
+        hasMore={channelMessagesCompleted()}
+        fetchMore={fetchMore}
+        user={{username,id}} sendMessage={sendMessage} 
+        needToScroll={needToScroll.current} messages={messages[currentCh]?messages[currentCh]:[]}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
       {chatModal &&
