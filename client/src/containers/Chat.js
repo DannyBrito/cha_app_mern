@@ -12,6 +12,7 @@ import 'react-notifications/lib/notifications.css'
 const Chat = ({id,username,socket}) => {
 
   const isChatMounted = useRef(true)
+  const needToScroll = useRef(false)
 
   const [messages,setMessages] =useState({})
   const [textMsg,setTextMsg] = useState('')
@@ -20,6 +21,7 @@ const Chat = ({id,username,socket}) => {
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
   const [chatModal,setChatModal] = useState(false)
 
+  const [pageMessage,setPageMessage] = useState({})
   const [inputUserField, setInputUserField] = useState('')
   const [memberSelected, setMemberSelected] = useState([])
   const History = useHistory()
@@ -50,6 +52,20 @@ const Chat = ({id,username,socket}) => {
       socket.close()
     }
   },[])
+
+  useEffect(()=>{
+
+    if(!messages[currentCh]) return
+    const lastMessage = messages[currentCh].slice(-1)[0]
+    if(lastMessage.author._id !== id) needToScroll.current = false
+    
+  },[id,currentCh,messages])
+
+  // Infinte Scroll
+
+   const fetchMore = () => {
+     fetch(BASE_URL +`/channels/${currentCh}?limit=20&page=${pageMessage[currentCh]}`)
+   }
 
   // Checks for User Id otherwise redirected to Login/SignUp if Id presents fetchs Users channels
   useEffect(()=>{
@@ -88,7 +104,11 @@ const Chat = ({id,username,socket}) => {
         if(result.length){
         setAllSubChannels(channels)
         // adding
+        needToScroll.current = true
         setMessages({...msgs})
+          let tempPages = {}
+          result.forEach(ch => tempPages[ch] = 1)
+          setPageMessage(tempPages)
         // 
         setCurrentCh(result[0])
         }
@@ -183,7 +203,7 @@ const Chat = ({id,username,socket}) => {
     <>
       <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} openModal={openModal} channels={allSubChannels} id={id}/>
       <ChatBox 
-        user={{username,id}} sendMessage={sendMessage} messages={messages[currentCh]?messages[currentCh]:[]}
+        user={{username,id}} sendMessage={sendMessage} needToScroll={needToScroll.current} messages={messages[currentCh]?messages[currentCh]:[]}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
       {chatModal &&
