@@ -62,7 +62,6 @@ const Chat = ({id,username,socket}) => {
 
   // Setting Socket
   useEffect(()=>{
-    
     socket.open()
     socket.emit('self_channel',{id})
     socket.on('message',handleMessageReceivedOnSocket)
