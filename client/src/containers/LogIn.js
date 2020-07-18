@@ -1,30 +1,19 @@
 import React, {useState} from 'react';
-import { BASE_URL } from '../helpers/Constants';
+import { logIn } from '../helpers/Constants';
 import FormBase from '../components/FormBase';
 
-const LogIn = (props) => {
+const LogIn = ({loggedIn}) => {
     const [username,setUsername] = useState('')
     const [password,setPassword] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    fetch(BASE_URL + '/auth/login',{
-      method:'POST',
-      headers:{
-        'Content-Type': 'application/json',
-        Accept:'application/json'
-      },
-      body: JSON.stringify({
-        username,password
-      })
-    })
-      .then(res=>res.json())
-      .then(res =>{
-        if(!res.token) throw res
-        localStorage.setItem('token',res.token)
-        props.loggedIn(res.user.username,res.user._id)
-      })
-      .catch(window.alert)
+      logIn({username,password})
+        .then(({token,user}) =>{
+          localStorage.setItem('token',token)
+          loggedIn(user.username,user._id)
+        })
+        .catch(window.alert)
   }
 
   return (
@@ -37,9 +26,7 @@ const LogIn = (props) => {
       password={password}
       handleSubmit={handleSubmit}
       setUsername={setUsername}
-      setPassword={setPassword}
-
-      />
+      setPassword={setPassword} />
     </>
   );
 }
