@@ -25,6 +25,9 @@ const Chat = ({id,username,socket}) => {
   const [pageMessage,setPageMessage] = useState({})
   const [inputUserField, setInputUserField] = useState('')
   const [memberSelected, setMemberSelected] = useState([])
+
+  const [latestMessagePerChat,setLatestMessagePerChat] = useState({})
+
   const History = useHistory()
 
   // Setting Socket
@@ -41,6 +44,9 @@ const Chat = ({id,username,socket}) => {
             return {...prev,[message.channel]:[message]}
           }
         })
+        message.fireNotification = true
+        setLatestMessagePerChat(prev => ({...prev,[message.channel]:message}))
+        needToScroll.current = true
       }
     })
 
@@ -76,6 +82,7 @@ const Chat = ({id,username,socket}) => {
       })
    }
 
+
   // Checks for User Id otherwise redirected to Login/SignUp if Id presents fetchs Users channels
   useEffect(()=>{
     if(id) fetchChannels()
@@ -108,9 +115,10 @@ const Chat = ({id,username,socket}) => {
         if(!res.ok) throw res
         return res.json()
       })
-      .then(({channels,msgs,totalmsgs}) => {
+      .then(({channels,msgs,totalmsgs,latestMessagePerChat}) => {
         const result = Object.keys(channels)
         if(result.length){
+        setLatestMessagePerChat(latestMessagePerChat)
         setAllSubChannels(channels)
         // adding
         setTotalMessagesPerChat(totalmsgs)
@@ -216,8 +224,10 @@ const Chat = ({id,username,socket}) => {
   /* -------- () -------- */
   return (
     <>
-      <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} openModal={openModal} channels={allSubChannels} id={id}/>
-      <ChatBox 
+      <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} 
+      openModal={openModal} latestMessagePerChat={latestMessagePerChat} 
+      channels={allSubChannels} id={id} />
+      <ChatBox  
         hasMore={channelMessagesCompleted()}
         fetchMore={fetchMore}
         user={{username,id}} sendMessage={sendMessage} 
