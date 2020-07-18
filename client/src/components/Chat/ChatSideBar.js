@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React from 'react'
 import ReactEmoji from 'react-emoji'
 
 const ChatSideBar = ({latestMessagePerChat,currentCh,changeCurrentChat, channels,id,openModal}) =>{
@@ -31,7 +31,7 @@ const ChatSideBar = ({latestMessagePerChat,currentCh,changeCurrentChat, channels
     return(
         <div className="sidebarChat">
             <div className='sidebarChat_header'>
-                <button className="sidebarChat_btn" onClick={openModal}> <img className="sidebarChat_btn"src="/plus_icon.png"/> </button>
+                <button className="sidebarChat_btn" onClick={openModal}> <img className="sidebarChat_btn"src="/plus_icon.png" alt=''/> </button>
             </div>
             <div className='msgBox'>
                 {renderSideBar()}

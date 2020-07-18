@@ -2,12 +2,11 @@ import React,{useState, useEffect,useRef} from 'react';
 import {useHistory} from 'react-router';
 import ChatBox from '../components/Chat/ChatBox';
 import ChatSideBar from '../components/Chat/ChatSideBar';
-import {fetchUserChatsInfo, fetchMoreMessagesInChat, socketErrorHandler, fetchUserIDbyUsername, createChannel} from '../helpers/Constants'
-import Modal from '../components/Modal/Modal';
-import FormContent from '../components/Modal/FormContent';
+import {fetchUserChatsInfo, fetchMoreMessagesInChat, socketErrorHandler} from '../helpers/Constants'
 
 import {NotificationManager,NotificationContainer} from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
+import NewChatModal from '../components/NewChatModal';
 
 const Chat = ({id,username,socket}) => {
 
@@ -23,10 +22,7 @@ const Chat = ({id,username,socket}) => {
   const [pageMessage,setPageMessage] = useState({})
   
   const [textMsg,setTextMsg] = useState('')
-  
   const [chatModal,setChatModal] = useState(false)
-  const [inputUserField, setInputUserField] = useState('')
-  const [memberSelected, setMemberSelected] = useState([])
 
   const History = useHistory()
 
@@ -118,58 +114,30 @@ const Chat = ({id,username,socket}) => {
 
   /* -------- MODAL CONTROL -------- */
   
-  const resetModal = () =>{
-    setChatModal(false)
-    setInputUserField('')
-    setMemberSelected([])
+  const handleCreatedChannel = (userIDS) =>{
+      setChatModal(false)
+      socket.emit('created_new_channel',{users:userIDS})
+      // not the best option as refetch entire set of data but work-around
+      requestUserChatsInfo()
   }
-  // If cancel within modal
-  const onCancel = () =>{
-    resetModal()
-  }
-  // open Modal
+
   const openModal = () =>{
     setChatModal(true)
   }
-  // when confirmed
-  const onConfirm = () =>{
-   const userIds = [...memberSelected.map(mb => mb._id)]
-   createChannel({creator:id,users:userIds})
-    .then(() => {
-      socket.emit('created_new_channel',{users:userIds})
-      // not the best option as refetch entire set of data but work-around
-      requestUserChatsInfo()
-      resetModal()
-    })
-    .catch(console.log)
-  }
-
-  // user find submit for handler
-  const handleSubmitUser = (event) =>{
-    event.preventDefault()
-    fetchUserIDbyUsername(inputUserField)
-    .then(user => {
-      setMemberSelected(prev => [...prev,user])
-      setInputUserField('')
-    })
-    .catch(() =>{
-      NotificationManager.error('Couldn\'t add user to chat',inputUserField,3000)
-      setInputUserField('')
-    })
-  }
-
-  // remove user from group list previous creation
-  const deleteMember = (id) =>{
-    setMemberSelected(prev => [...prev.filter(mb => mb._id !== id)])
+  
+  const createUserNoFoundAlert = (user) =>{
+    NotificationManager.error('Couldn\'t add user to chat',user,3000)
   }
   
   /* -------- () -------- */
-  
+
   const channelMessagesCompleted = () =>{
     if(!messages[currentCh]) return false
     return messages[currentCh].length < totalMessagesPerChat[currentCh]
   }
 
+  const sendMessages = () => messages[currentCh]? messages[currentCh]:[]
+  
   return (
     <>
       <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} 
@@ -179,15 +147,13 @@ const Chat = ({id,username,socket}) => {
         hasMore={channelMessagesCompleted()}
         fetchMore={fetchMore}
         user={{username,id}} sendMessage={sendMessage} 
-        needToScroll={needToScroll.current} messages={messages[currentCh]?messages[currentCh]:[]}
+        needToScroll={needToScroll.current} messages={sendMessages()}
         textMsg={textMsg} setTextMsg={setTextMsg}
       />
       {chatModal &&
-        <Modal confirm cancel onConfirm={onConfirm} onCancel={onCancel} title='Create New Chat'>
-          <FormContent  handleSubmitUser={handleSubmitUser}
-          inputUserField={inputUserField} setInputUserField={setInputUserField} 
-          memberSelected={memberSelected} setMemberSelected={setMemberSelected} deleteMember={deleteMember}/>
-        </Modal>
+        <NewChatModal setChatModal={setChatModal} id={id}
+        handleCreatedChannel={handleCreatedChannel}
+        createUserNoFoundAlert={createUserNoFoundAlert} />
       }
       <NotificationContainer />
     </>
