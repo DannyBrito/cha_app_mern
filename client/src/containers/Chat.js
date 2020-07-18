@@ -87,7 +87,7 @@ const Chat = ({id,username,socket}) => {
   }
 
   // Infinte Scroll
-  const fetchMore = () => {
+  const fetchMoreMessagesForChat = () => {
     if(messages[currentCh].length >= totalMessagesPerChat[currentCh]) return console.log('leaving')
     fetchMoreMessagesInChat(currentCh,pageMessage[currentCh])
       .then(({messages})=>{
@@ -107,8 +107,8 @@ const Chat = ({id,username,socket}) => {
 
 
   // Handles message to be sent through socket
-  const sendMessage = () =>{
-      socket.emit('sendMessage',{author:id,message:textMsg,channel:currentCh},()=>setTextMsg(''))
+  const sendMessage = (message) =>{
+      socket.emit('sendMessage',{message, author:id, channel:currentCh},()=>setTextMsg(''))
   }
 
   /* -------- MODAL CONTROL -------- */
@@ -144,10 +144,9 @@ const Chat = ({id,username,socket}) => {
       channels={allSubChannels} id={id} />
       <ChatBox  
         hasMore={channelMessagesCompleted()}
-        fetchMore={fetchMore}
+        fetchMoreMessagesForChat={fetchMoreMessagesForChat}
         user={{username,id}} sendMessage={sendMessage} 
         needToScroll={needToScroll.current} messages={sendMessages()}
-        textMsg={textMsg} setTextMsg={setTextMsg}
       />
       {chatModal &&
         <NewChatModal setChatModal={setChatModal} id={id}
