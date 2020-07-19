@@ -10,17 +10,11 @@ io.on('connection',(socket)=>{
 
     console.log('we have a new connection')
     
-    socket.on('self_channel',({id})=>{
-        socket.join(`slf-ch:${id}`)
-    })
+    socket.on('self_channel',({id})=> socket.join(`slf-ch:${id}`))
 
-    socket.on('join_channels',({channels}, callback)=>{
-        
-        // socket.rooms = {}
+    socket.on('join_channels',({channels}, callback)=> {
 
-        channels.forEach(channel => {
-            socket.join(`${channel}`)
-        });
+        channels.forEach(channel => socket.join(`${channel}`));
 
         if(!channels.length) socket.join('LobbyGeneral')
 
@@ -30,33 +24,37 @@ io.on('connection',(socket)=>{
     })
 
     socket.on('join_lobby',(payload, callback)=>{
-        
-        // socket.rooms = {}
 
         socket.join('LobbyGeneral')
 
         callback()
     })
 
-    socket.on('created_new_channel',(payload,callback)=>{
-            payload.users.forEach(id =>{
-                socket.to(`slf-ch:${id}`).emit('new_channel')
-            })
+    socket.on('created_new_channel',(payload)=>{
+        
+        payload.users.forEach(id => socket.to(`slf-ch:${id}`).emit('new_channel'))
+
     })
 
     socket.on('sendMessage',async (payload,callback)=>{
         
         if(payload.channel){
+
             const message = await Message.create(payload)
+
             await message.populate('author','_id username').execPopulate()
+
             io.to(payload.channel).emit('message',message)
+
             callback()
         }
         
     })
 
     socket.on('disconnect',()=>{
+
         console.log('User had left')
+        
     })
 
 })
