@@ -38,7 +38,7 @@ const App = () => {
   
   return (
     <div className="App">
-      < Navbar username={username} />
+      {/* {History. &&< Navbar username={username} />} */}
       <div id="maincontainer">
         <Route path="/" exact render={() => <LogIn loggedIn={loggedIn} />} />
         <Route path="/signup" exact render={() =><SignUp loggedIn={loggedIn} />}/>

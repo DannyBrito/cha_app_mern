@@ -8,16 +8,20 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
 }
 
 html, body, #root, .App {
+  overflow: hidden;
   height: 100%;
   background-color: rgb(6, 65, 92);
 }
 
 .App{
+  position: fixed;
+  width: 100%;
   display: grid;
-  grid-template: 50px 1fr/1fr;
+  grid-template: 1fr/1fr;
 }
 
 .Navbar {
@@ -28,26 +32,26 @@ html, body, #root, .App {
 
 #maincontainer{
   display: grid;
-  max-height: calc(100vh - 50px);
-  grid-template: 50px 2fr 1fr 2fr 50px / 100px 1fr 3fr 3fr 4fr 2fr 100px;
+  max-height: 100%;
+  overflow: hidden;
+  grid-template: 50px 1fr 50px / 10% 1fr 10%;
   background-color: royalblue;
 }
 
 .formcontainer{
   border-radius: 20px;
-  padding: 60px;
-  grid-area: 2 / 3 / 5 / 5;
-  background-color:#1877f2;
+  width: 60%;
+  margin: 0 auto;
+  padding: 5%;
+  grid-area: 1/2/3/3;
+  background-color:#d3e6ff;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   -webkit-box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
   -moz-box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
   box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
   /* background-color: ; */
-}
-.formcontainer:hover{
-  background-color: rgba(255, 255, 255, 0.213);
 }
 
 .form{
@@ -56,18 +60,41 @@ html, body, #root, .App {
 
 .input{
   display: block;
-  height: 25px;
+  height: 40px;
+  padding: 0 3%;
   border-radius: 5px;
   border-width: 0;
-  margin: 5px 0;
+  margin: 10px 0;
   width: 100%;
+}
+
+@media only screen and (max-width:600px){
+  .formcontainer{
+    background: rgb(255, 255, 255);
+    border-radius: 0;
+    grid-area: 1/1/4/4;
+    width: 100%;
+  }
+
+  .input{
+    border: rgb(170, 170, 170) solid 1px;
+    border-radius: 2px;
+  }
+
+}
+
+.link, .link:visited{
+  color: #0D58C1;
 }
 
 .subtn{
   margin: 25px 0 0 0;
-  background-color: seagreen;
-  border-color: black;
-  border-width: 1px;
+  background-color: #0d58c1e0;
+  color: #fff;
+  border:none;
+}
+.subtn:hover{
+    background-color: #0d58c1;
 }
 
 .titleForm{
@@ -79,7 +106,7 @@ html, body, #root, .App {
 .sidebarChat{
   padding: 10px 0px 40px 0px;
   min-width: 0;
-  grid-area: 2/3/5/4;
+  grid-area: 1/1/2/2;
   background-color: #0048AA;
   border-radius: 20px 0px 0px 20px;
   border: black solid 1px;
@@ -100,12 +127,20 @@ html, body, #root, .App {
   width: 30px;
   
 }
-.chatbox{
 
+.Chat_Container{
+  grid-area: 2/2/3/3;
+  display: grid;
+  grid-template: 1fr /1fr 3fr;
+  /* max-height: 100%; */
+  overflow: hidden;
+}
+
+.chatbox{
   padding: 40px;
   padding-bottom: 20px;
-  min-width: 0;
-  grid-area: 2 / 4 / 5 / 6;
+  min-height: 0;
+  grid-area: 1/2/2/3;
   background-color: rgba(255, 255, 255, 1.1);
   border-radius: 0px 20px 20px 0px;
   border: black solid 1px;

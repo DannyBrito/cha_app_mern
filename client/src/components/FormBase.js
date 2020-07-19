@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const FormBase = ({title,username,password,handleSubmit,setUsername,setPassword,link,msg_link}) => {
+const FormBase = ({msg_account,title,username,password,handleSubmit,setUsername,setPassword,link,msg_link}) => {
 
     return (
     <div className="formcontainer">
@@ -10,11 +10,11 @@ const FormBase = ({title,username,password,handleSubmit,setUsername,setPassword,
               {title}
           </div>
           <label htmlFor="Username"> Username: </label>
-          <input className="input" value={username} onChange={e=>setUsername(e.target.value)} type="text" />
+          <input className="input" placeholder="Enter your username." value={username} onChange={e=>setUsername(e.target.value)} type="text" />
           <label htmlFor="Password"> Password: </label>
-          <input className="input" value={password} onChange={e=>setPassword(e.target.value)} type="password" />
+          <input className="input"  placeholder="Enter your password."value={password} onChange={e=>setPassword(e.target.value)} type="password" />
           <div className="i">
-              <Link to={link}>
+              {msg_account} <Link className="link" to={link}>
                 {msg_link}
               </Link>
           </div>

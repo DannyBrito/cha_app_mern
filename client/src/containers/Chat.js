@@ -138,7 +138,7 @@ const Chat = ({id,username,socket}) => {
   const sendMessages = () => messages[currentCh]? messages[currentCh]:[]
   
   return (
-    <>
+    <div className="Chat_Container">
       <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} 
       openModal={openModal} latestMessagePerChat={latestMessagePerChat} 
       channels={allSubChannels} id={id} />
@@ -154,7 +154,7 @@ const Chat = ({id,username,socket}) => {
         createUserNoFoundAlert={createUserNoFoundAlert} />
       }
       <NotificationContainer />
-    </>
+    </div>
   );
 }
 
