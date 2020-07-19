@@ -1,11 +1,11 @@
 import React from 'react'
 
-const FormContent = ({handleSubmitUser,inputUserField,setInputUserField,memberSelected,deleteMember,setMemberSelected}) =>{
+const FormContent = ({handleSubmitedUser,inputUserField,setInputUserField,memberSelected,deleteMember}) =>{
 
 
     return(
         <>
-            <form className='userSearch_form' onSubmit={handleSubmitUser}> 
+            <form className='userSearch_form' onSubmit={handleSubmitedUser}> 
                 <label htmlFor="user" className="userSearch_text"> Add a user: </label>
                 <input placeholder="Search for User" value={inputUserField} onChange={(e)=>setInputUserField(e.target.value)}
                 className="userSearch_ipt"/>
@@ -15,7 +15,7 @@ const FormContent = ({handleSubmitUser,inputUserField,setInputUserField,memberSe
                 {memberSelected.map(({_id,username}) =>
                 <div key={_id} className="user_box"> {username} 
                     <div onClick={()=> deleteMember(_id)} className="closeIcon" >
-                        <img src="/close-icon.png"/>
+                        <img src="/close-icon.png" alt="" />
                     </div>
                 </div>
                 )}

@@ -1,33 +1,32 @@
-import React, {useRef,useEffect} from 'react';
+import React, {useRef,useEffect,useState} from 'react';
 import Message from './Message';
 
-const ChatBox = ({hasMore,fetchMore, needToScroll, user, messages, textMsg, setTextMsg ,sendMessage}) => {
+const ChatBox = ({hasMore,fetchMoreMessagesForChat, needToScroll, user, messages, sendMessage}) => {
 
   const mesRef = useRef()
-
-  const scrollToBottom = () =>{
-      mesRef.current.scrollTop = mesRef.current.scrollHeight;
-  }
+  const [textMsg,setTextMsg] = useState('')
 
   useEffect(()=>{
-     mesRef.current.reachTop = false
+    mesRef.current.reachTop = false
     if(needToScroll && messages.length) scrollToBottom()
   },[messages,needToScroll])
   
+  const scrollToBottom = () =>{
+      mesRef.current.scrollTop = mesRef.current.scrollHeight;
+  }
   const onEnter = e =>{
-    if(e.charCode === 13 && textMsg !== '') sendMessage() 
+    if(e.charCode === 13 && textMsg !== '') sendMessage(textMsg) 
   }
 
-  const onSubmit = e =>{
-      if(textMsg) sendMessage()
+  const onSubmit = () =>{
+      if(textMsg) sendMessage(textMsg)
   }
 
   const handleScroll = e =>{
     if(hasMore && mesRef.current && mesRef.current.scrollTop < 100 && !mesRef.current.reachTop){
-      console.log('here')
-       fetchMore()
+      fetchMoreMessagesForChat()
       console.log('reaching top')
-       mesRef.current.reachTop = true
+      mesRef.current.reachTop = true
     }
   }
 
@@ -43,7 +42,7 @@ const ChatBox = ({hasMore,fetchMore, needToScroll, user, messages, textMsg, setT
                 onChange={e=>setTextMsg(e.target.value)} 
                 type="text" className="typingBox" 
             />
-            <button className="chatbtn"onClick={onSubmit}> Send </button>
+            <button className="chatbtn" onClick={onSubmit}> Send </button>
         </div>
     </div>
   );

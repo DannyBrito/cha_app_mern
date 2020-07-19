@@ -7,7 +7,7 @@ import Chat from './containers/Chat'
 import SignUp from './containers/SignUp';
 import LogIn from './containers/LogIn';
 import Navbar from './containers/Navbar'
-import { BASE_URL,BASE_URL_SOCKET } from './helpers/Constants';
+import {BASE_URL_SOCKET, confirmTokenValidationForLogin } from './helpers/Constants';
 
 
 const socket = io(BASE_URL_SOCKET);
@@ -19,26 +19,15 @@ const App = () => {
   const History = useHistory()
 
   useEffect(()=>{
-  
-      autoLogin()
-      // if(!id) History.push('/')
-    }
+    autoLogin()
+  }
   ,[])
 
   const autoLogin = () =>{
     const token = localStorage.getItem('token')
-    if(token){
-      fetch(BASE_URL + '/auth/auto_login',{
-        method:'GET',
-        headers:{
-          'Content-Type': 'application/json',
-          Accept:'application/json',
-          Authorization:'Bearer ' + token
-        }
-      })
-      .then(res => res.json())
+    if(!token) return
+    confirmTokenValidationForLogin(token)
       .then(({_id,username}) => loggedIn(username,_id))
-    }
   }
 
   const loggedIn = (username, id) =>{

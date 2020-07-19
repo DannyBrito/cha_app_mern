@@ -2,226 +2,141 @@ import React,{useState, useEffect,useRef} from 'react';
 import {useHistory} from 'react-router';
 import ChatBox from '../components/Chat/ChatBox';
 import ChatSideBar from '../components/Chat/ChatSideBar';
-import {BASE_URL} from '../helpers/Constants'
-import Modal from '../components/Modal/Modal';
-import FormContent from '../components/Modal/FormContent';
+import {fetchUserChatsInfo, fetchMoreMessagesInChat, socketErrorHandler} from '../helpers/Constants'
 
 import {NotificationManager,NotificationContainer} from 'react-notifications'
 import 'react-notifications/lib/notifications.css'
+import NewChatModal from '../components/NewChatModal';
 
 const Chat = ({id,username,socket}) => {
 
   const isChatMounted = useRef(true)
   const needToScroll = useRef(false)
 
-  const [messages,setMessages] =useState({})
-  const [textMsg,setTextMsg] = useState('')
-  const [allSubChannels,setAllSubChannels] = useState({})
-
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
+
+  const [messages,setMessages] = useState({})
+  const [totalMessagesPerChat, setTotalMessagesPerChat] = useState({})
+  const [allSubChannels,setAllSubChannels] = useState({})
+  const [latestMessagePerChat,setLatestMessagePerChat] = useState({})
+  const [pageMessage,setPageMessage] = useState({})
+  
+  const [textMsg,setTextMsg] = useState('')
   const [chatModal,setChatModal] = useState(false)
 
-  const [totalMessagesPerChat, setTotalMessagesPerChat] = useState({})
-  const [pageMessage,setPageMessage] = useState({})
-  const [inputUserField, setInputUserField] = useState('')
-  const [memberSelected, setMemberSelected] = useState([])
-
-  const [latestMessagePerChat,setLatestMessagePerChat] = useState({})
-
   const History = useHistory()
+
+  const requestUserChatsInfo = () =>{
+    fetchUserChatsInfo(id)
+    .then(updateReceivedInfoToStates)
+    .catch(console.log)
+  }
+
+  const updateReceivedInfoToStates = ({channels,msgs,totalmsgs,latestMessagePerChat}) =>{
+    const channelIDs = Object.keys(channels)
+    if(channelIDs.length){
+      // update scroll Ref for auto-scroll when messages load.
+      needToScroll.current = true
+      // update States
+      setLatestMessagePerChat(latestMessagePerChat)
+      setAllSubChannels(channels)
+      setTotalMessagesPerChat(totalmsgs)
+      setMessages({...msgs})
+      initializeAndSetChatPages(channelIDs)
+      setCurrentCh(channelIDs[0])
+    }
+    else NotificationManager.info('You can create new chats','Welcome ' + username)
+  }
+
+  const initializeAndSetChatPages = (channels) => {
+      let pages = {}
+      channels.forEach(ch => pages[ch] = 1)
+      setPageMessage(pages)
+  }
+
+  // Redirect if ID is not present
+  useEffect(()=>{
+    if(id) requestUserChatsInfo()
+    else History.push('/')
+  },[id])
 
   // Setting Socket
   useEffect(()=>{
     socket.open()
     socket.emit('self_channel',{id})
-    socket.on('message', message =>{
-      if(isChatMounted.current){
-        setMessages(prev => {
-          if(prev[message.channel]){
-            return {...prev,[message.channel]:[...prev[message.channel],message]}
-          }
-          else {
-            return {...prev,[message.channel]:[message]}
-          }
-        })
-        message.fireNotification = true
-        setLatestMessagePerChat(prev => ({...prev,[message.channel]:message}))
-        needToScroll.current = true
-      }
-    })
-
-    socket.on('new_channel',()=>{
-        fetchChannels()
-    })
+    socket.on('message',handleMessageReceivedOnSocket)
+    socket.on('new_channel',requestUserChatsInfo)
 
     return () =>{
       isChatMounted.current = false
       socket.close()
     }
+
   },[])
 
-  useEffect(()=>{
-
-    if(!messages[currentCh] || !messages[currentCh].length) return
-    const lastMessage = messages[currentCh].slice(-1)[0]
-    if(lastMessage.author._id !== id) needToScroll.current = false
-    else needToScroll.current = true
-    
-  },[id,currentCh,messages])
+  // Socket helper
+  const handleMessageReceivedOnSocket = message =>{ 
+    // break if chat is unmounted
+    if(!isChatMounted.current) return
+    setMessages(prev => {
+        if(prev[message.channel]) return {...prev,[message.channel]:[...prev[message.channel],message]}
+        return {...prev,[message.channel]:[message]}
+    })
+    setLatestMessagePerChat(prev => ({...prev,[message.channel]:message}))
+    needToScroll.current = true
+  }
 
   // Infinte Scroll
-
-   const fetchMore = () => {
-     if(messages[currentCh].length >= totalMessagesPerChat[currentCh]) return console.log('leaving')
-     fetch(BASE_URL +`/channels/${currentCh}?limit=50&page=${pageMessage[currentCh]+1}`)
-      .then(res => res.json())
+  const fetchMoreMessagesForChat = () => {
+    if(messages[currentCh].length >= totalMessagesPerChat[currentCh]) return console.log('leaving')
+    fetchMoreMessagesInChat(currentCh,pageMessage[currentCh])
       .then(({messages})=>{
-          needToScroll.current = false
-          setPageMessage(prev=>({...prev,[currentCh]: prev[currentCh] + 1 }))
-          setMessages(prev => ({...prev,[currentCh]:[...messages,...prev[currentCh]]}))
-      })
-   }
-
-
-  // Checks for User Id otherwise redirected to Login/SignUp if Id presents fetchs Users channels
-  useEffect(()=>{
-    if(id) fetchChannels()
-    else History.push('/')
-  },[id])
-
-  // Socket setting channels for User on any change of channels
-  useEffect(()=>{
-    if(isChatMounted.current){
-      const tempChannels = Object.keys(allSubChannels)
-      if(tempChannels.length){
-        socket.emit('join_channels',{channels:tempChannels},(err)=>{
-          if(err) alert(err)
-        })
-      }
-      else{
-        socket.emit('join_lobby',undefined,(err)=>{
-          if(err) alert(err)
-        })
-      }
-    }
-    return () =>{
-      if(!isChatMounted.current) socket.close()
-    }
-  },[allSubChannels])
-
-  const fetchChannels = () =>{
-      fetch(BASE_URL + `/channels/user_channels/${id}`)
-      .then(res =>{
-        if(!res.ok) throw res
-        return res.json()
-      })
-      .then(({channels,msgs,totalmsgs,latestMessagePerChat}) => {
-        const result = Object.keys(channels)
-        if(result.length){
-        setLatestMessagePerChat(latestMessagePerChat)
-        setAllSubChannels(channels)
-        // adding
-        setTotalMessagesPerChat(totalmsgs)
-        needToScroll.current = true
-        setMessages({...msgs})
-          let tempPages = {}
-          result.forEach(ch => tempPages[ch] = 1)
-          setPageMessage(tempPages)
-        // 
-        setCurrentCh(result[0])
-        }
-        else{
-          NotificationManager.info('You can create new chats','Welcome ' + username)
-        }
+        needToScroll.current = false
+        setPageMessage(prev=>({...prev,[currentCh]: prev[currentCh] + 1 }))
+        setMessages(prev => ({...prev,[currentCh]:[...messages,...prev[currentCh]]}))
       })
       .catch(console.log)
   }
-  // function helper to emit event by socket
-  const sendMessage = () =>{
-      socket.emit('sendMessage',{author:id,message:textMsg,channel:currentCh},()=>{
-        setTextMsg('')
-      })
+
+  // If channels State is change/updated to set new socket channels
+  useEffect(()=>{
+      const temporalChannelIds = Object.keys(allSubChannels)
+      if(temporalChannelIds.length) socket.emit('join_channels',{channels:temporalChannelIds},socketErrorHandler)
+      else socket.emit('join_lobby',undefined,socketErrorHandler)
+  },[allSubChannels])
+
+
+  // Handles message to be sent through socket
+  const sendMessage = (message) =>{
+      socket.emit('sendMessage',{message, author:id, channel:currentCh},()=>setTextMsg(''))
   }
 
   /* -------- MODAL CONTROL -------- */
   
-  // If cancel within modal
-  const onCancel = () =>{
-   setChatModal(false)
-   setInputUserField('')
-   setMemberSelected([])
-  }
-  // when confirmed
-  const onConfirm = () =>{
-   setChatModal(false)
-   const userIds = [...memberSelected.map(mb => mb._id)]
-   fetch(BASE_URL +'/channels',{
-      method:'POST',
-      headers:{
-        Accept:'application/json',
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({creator:id,users:userIds})
-   })
-    .then(res =>{
-    if(!res.ok) throw res
-    return res.json()
-    })
-    .then((res) => {
+  const handleCreatedChannel = (userIDS) =>{
+      setChatModal(false)
+      socket.emit('created_new_channel',{users:userIDS})
       // not the best option as refetch entire set of data but work-around
-      socket.emit('created_new_channel',{users:userIds},()=>{
-
-      })
-      fetchChannels()
-      setMemberSelected([])
-      setInputUserField('')
-    })
-    .catch(console.log)
-  
+      requestUserChatsInfo()
   }
 
-  // open Modal
   const openModal = () =>{
     setChatModal(true)
   }
-
-  // user find submit for handler
-  const handleSubmitUser = (e) =>{
-      e.preventDefault()
-
-      fetchUserId(inputUserField)
-      .then(res => res.json()
-          .then(rs => ({body:rs,ok:res.ok}))
-      )
-      .then(res =>{
-        if(!res.ok) throw(res.body)
-        return res
-      })
-      .then(res => {
-        setMemberSelected(prev => [...prev,res.body])
-        setInputUserField('')
-      })
-      .catch(err =>{
-        setInputUserField('')
-        NotificationManager.error('Couldn\'t add user to chat',err,3000)
-      })
+  
+  const createUserNoFoundAlert = (user) =>{
+    NotificationManager.error('Couldn\'t add user to chat',user,3000)
   }
-
-  const fetchUserId = name => {
-      return fetch(BASE_URL + '/users/find/' + name)
-  }
-
-  // remove user from group list previous creation
-  const deleteMember = (id) =>{
-    setMemberSelected(prev => [...prev.filter(mb => mb._id !== id)])
-  }
+  
+  /* -------- () -------- */
 
   const channelMessagesCompleted = () =>{
     if(!messages[currentCh]) return false
     return messages[currentCh].length < totalMessagesPerChat[currentCh]
   }
 
-  /* -------- () -------- */
+  const sendMessages = () => messages[currentCh]? messages[currentCh]:[]
+  
   return (
     <>
       <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} 
@@ -229,17 +144,14 @@ const Chat = ({id,username,socket}) => {
       channels={allSubChannels} id={id} />
       <ChatBox  
         hasMore={channelMessagesCompleted()}
-        fetchMore={fetchMore}
+        fetchMoreMessagesForChat={fetchMoreMessagesForChat}
         user={{username,id}} sendMessage={sendMessage} 
-        needToScroll={needToScroll.current} messages={messages[currentCh]?messages[currentCh]:[]}
-        textMsg={textMsg} setTextMsg={setTextMsg}
+        needToScroll={needToScroll.current} messages={sendMessages()}
       />
       {chatModal &&
-        <Modal confirm cancel onConfirm={onConfirm} onCancel={onCancel} title='Create New Chat'>
-          <FormContent  handleSubmitUser={handleSubmitUser}
-          inputUserField={inputUserField} setInputUserField={setInputUserField} 
-          memberSelected={memberSelected} setMemberSelected={setMemberSelected} deleteMember={deleteMember}/>
-        </Modal>
+        <NewChatModal setChatModal={setChatModal} id={id}
+        handleCreatedChannel={handleCreatedChannel}
+        createUserNoFoundAlert={createUserNoFoundAlert} />
       }
       <NotificationContainer />
     </>
