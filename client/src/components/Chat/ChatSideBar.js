@@ -17,9 +17,9 @@ const ChatSideBar = ({latestMessagePerChat,currentCh,changeCurrentChat, channels
 
     const renderChatsOnSideBar = () =>{
         return Object.keys(channels).map(key =>
-            <div onClick={()=>changeCurrentChat(key)} className={`${setClassNamesforChat(key)}`} key={key}>
+            <div onClick={()=>changeCurrentChat(key)} className={setClassNamesforChat(key)} key={key}>
                 <div className="group_box_members">
-                {channels[key].filter(({user})=>user._id !== id).reduce((acc,{user}) => acc + ' ' + user.username,'')}:
+                {channels[key].filter(({user})=>user._id !== id).reduce((acc,{user}) => `${acc} ${user.username}`,'')}:
                 </div>
                 <div className="group_box_new_msg">
                     {authorFromLastestMessage(key)} {latestMessagePerChat[key] && ReactEmoji.emojify(latestMessagePerChat[key].message)}

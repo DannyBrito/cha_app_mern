@@ -8,14 +8,14 @@ const Message = ({sender, message, user}) => {
         if(sender._id === user.id) setOwnership(true)
     },[sender,user])
 
-    const messageOwner = (base,owner) =>{
-        return ownership ? base + ' ' + owner : base
+    const setClassNameBasedOwnership = (base,owner) =>{
+        return ownership ? `${base} ${owner}` : base
     }
 
     return (
-        <div className={`${messageOwner('message_box','own_message')}`}>
-            <div className="message_sender">{sender ? sender.username : 'Unknow'}:</div>
-            <div className={`${messageOwner('message_content','blue_bbl')}`}>{ReactEmoji.emojify(message)}</div>
+        <div className={setClassNameBasedOwnership('message_box','own_message')}>
+            <div className="message_sender">{sender.username}:</div>
+            <div className={setClassNameBasedOwnership('message_content','blue_bbl')}>{ReactEmoji.emojify(message)}</div>
         </div>
     )
 }
