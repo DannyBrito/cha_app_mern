@@ -144,20 +144,23 @@ html, body, #root, .App {
 
 .preventColumnBlowOut{
   overflow: scroll;
+  min-height: 80%;
 }
 .messagesContainer{
   padding: 0 3%;
+  min-height: 90%;
 }
 .InputContainer{
   position: relative;
-  background-color:rgb(213, 213, 213);
+  /* background-color:rgb(213, 213, 213); */
   display: flex;
   align-items: center;
+  min-width: 80%;
+  height: 10%;
   /* flex-direction: row; */
   /* border: none; */
   border-top: black solid 1px;
-  border-radius: 0 0 22px 0;
-  height: 25%;
+  border-radius: 0 0 100px 0;
 }
 .typingBox:focus{
   outline: none;
@@ -165,18 +168,20 @@ html, body, #root, .App {
 .typingBox{
   background-color: rgb(213, 213, 213);
   font-size: larger;
-  flex-grow: 1;
-  padding: 15px;
-  border-style: none;
+  /* flex-grow: 1; */
+  min-width: 90%;
+  margin: 1%;
+  padding: 2%;
+  border: grey solid 1px;
   border-radius: 22px;
-  height: 50px;
+  height: 50%;
 }
 
 .chatbtn{
   margin-right: 2%;
   border-radius: 100%;
-  height: 30px;
-  width: 30px;
+  max-height: 30px;
+  max-width: 30px;
   outline: none;
 }
 .chatbtn:hover{
@@ -195,7 +200,6 @@ html, body, #root, .App {
   word-wrap: break-word;
   background-color: rgb(206, 206, 206);
   max-width: 70%;
-  
   padding: 2px 11px 2px 11px;
   border : rgba(0, 0, 0, 0.084) solid 1px;
   border-radius: 22px;
@@ -295,6 +299,18 @@ html, body, #root, .App {
   .input{
     border: rgb(170, 170, 170) solid 1px;
     border-radius: 2px;
+  }
+
+  .typingBox{
+    background-color: rgb(213, 213, 213);
+    font-size: larger;
+    width: 90%;
+    min-width: 80%;
+    margin: 1%;
+    padding: 2%;
+    border: grey solid 1px;
+    border-radius: 22px;
+    height: 50%;
   }
 
 }

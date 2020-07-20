@@ -46,7 +46,7 @@ const ChatBox = ({hasMore,fetchMoreMessagesForChat, needToScroll, user, messages
                 onChange={e=>setTextMsg(e.target.value)} 
                 type="text" className="typingBox" 
             />
-            <img className="chatbtn" src="/send.png" onClick={onSubmit} />
+            <img className="chatbtn"  src={textMsg ? "/active_send.png" : "/send.png"} onClick={onSubmit} />
         </div>
     </div>
   );
