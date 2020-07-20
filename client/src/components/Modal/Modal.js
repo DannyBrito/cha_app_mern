@@ -10,9 +10,11 @@ const Modal = ({children,title,onConfirm,onCancel}) =>(
                 <div className="modal_title">
                     {title}
                 </div>
-                <div className="modal_content">
-                    {children}
-                </div>
+                {children &&
+                    <div className="modal_content">
+                        {children}
+                    </div>
+                }
                 <div className="modal_controllers">
                     {onConfirm && <button onClick={onConfirm} className="modal_btn"> Confirm</button>}
                     {onCancel && <button onClick={onCancel} className="modal_btn"> Cancel</button>}

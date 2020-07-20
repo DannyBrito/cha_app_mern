@@ -136,9 +136,14 @@ const Chat = ({id,username,socket}) => {
 
   const sendMessages = () => messages[currentCh]? messages[currentCh]:[]
   
+  const updateChannel = (channel) =>{
+    needToScroll.current = true
+    setCurrentCh(channel)
+  }
+
   return (
     <div className="Chat_Container">
-      <ChatSideBar currentCh={currentCh} changeCurrentChat={setCurrentCh} 
+      <ChatSideBar currentCh={currentCh} changeCurrentChat={updateChannel} 
       openModal={openModal} latestMessagePerChat={latestMessagePerChat} 
       channels={allSubChannels} id={id} />
       <ChatBox  

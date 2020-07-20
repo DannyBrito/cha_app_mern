@@ -1,8 +1,10 @@
-import React from 'react'
+import React,{ useState } from 'react'
 import ReactEmoji from 'react-emoji'
+import LogOutModal from '../LogOutModal'
 
 const ChatSideBar = ({latestMessagePerChat,currentCh,changeCurrentChat, channels,id,openModal}) =>{
     
+    const [logOutModal, setLogOutModal] = useState(false)
 
     const setClassNamesforChat = id =>{
         const base = "group_box_sidebar"
@@ -29,17 +31,22 @@ const ChatSideBar = ({latestMessagePerChat,currentCh,changeCurrentChat, channels
     }
 
     return(
-        <div className="sidebarChat">
-            <div className='sidebarChat_header'>
-                    <img src="/plus_icon.png" alt='' className="sidebarChat_btn" onClick={openModal}/> 
+        <>
+            <div className="sidebarChat">
+                <div className='sidebarChat_header'>
+                        <img src="/plus_icon.png" alt='' className="sidebarChat_btn" onClick={openModal}/> 
+                </div>
+                <div className='preventColumnBlowOut'>
+                    {renderChatsOnSideBar()}
+                </div>
+                <div className='sidebarChat_footer'>
+                        <img src="/log_out.png" alt='' className="sidebarChat_btn" onClick={()=>setLogOutModal(true)}/> 
+                </div>
             </div>
-            <div className='preventColumnBlowOut'>
-                {renderChatsOnSideBar()}
-            </div>
-            <div className='sidebarChat_footer'>
-                    <img src="/log_out.png" alt='' className="sidebarChat_btn" onClick={openModal}/> 
-            </div>
-        </div>
+            { logOutModal &&
+                <LogOutModal setLogOutModal={setLogOutModal}/>
+            }
+        </>
     )
 }
 
