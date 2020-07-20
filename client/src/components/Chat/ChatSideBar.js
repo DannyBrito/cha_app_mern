@@ -31,12 +31,13 @@ const ChatSideBar = ({latestMessagePerChat,currentCh,changeCurrentChat, channels
     return(
         <div className="sidebarChat">
             <div className='sidebarChat_header'>
-                <button className="sidebarChat_btn" onClick={openModal}> 
-                    <img className="sidebarChat_btn"src="/plus_icon.png" alt=''/> 
-                </button>
+                    <img src="/plus_icon.png" alt='' className="sidebarChat_btn" onClick={openModal}/> 
             </div>
-            <div className='msgBox'>
+            <div className='preventColumnBlowOut'>
                 {renderChatsOnSideBar()}
+            </div>
+            <div className='sidebarChat_footer'>
+                    <img src="/log_out.png" alt='' className="sidebarChat_btn" onClick={openModal}/> 
             </div>
         </div>
     )

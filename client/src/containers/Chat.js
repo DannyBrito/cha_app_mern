@@ -21,7 +21,6 @@ const Chat = ({id,username,socket}) => {
   const [latestMessagePerChat,setLatestMessagePerChat] = useState({})
   const [pageMessage,setPageMessage] = useState({})
   
-  const [textMsg,setTextMsg] = useState('')
   const [chatModal,setChatModal] = useState(false)
 
   const History = useHistory()
@@ -108,7 +107,7 @@ const Chat = ({id,username,socket}) => {
 
   // Handles message to be sent through socket
   const sendMessage = (message) =>{
-      socket.emit('sendMessage',{message, author:id, channel:currentCh},()=>setTextMsg(''))
+      socket.emit('sendMessage',{message, author:id, channel:currentCh})
   }
 
   /* -------- MODAL CONTROL -------- */

@@ -1,7 +1,7 @@
 
 /* 
 
-  NOTE IF TEXT TRUNCATION BECOMES A PROBLEM KEY TO NOTE ON WHITE-SPACE ATTRIBUTE ON DIV WITH GRID CHILD ELEMETS
+NOTE IF TEXT TRUNCATION BECOMES A PROBLEM KEY TO NOTE ON WHITE-SPACE ATTRIBUTE ON DIV WITH GRID CHILD ELEMETS
 
 */
 *{
@@ -9,12 +9,17 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
+  letter-spacing: 0.1em;
 }
 
 html, body, #root, .App {
   overflow: hidden;
   height: 100%;
   background-color: rgb(6, 65, 92);
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 .App{
@@ -28,30 +33,29 @@ html, body, #root, .App {
   background-color: rgba(22, 9, 9, 0.58);
   color: aliceblue;
   text-align: center;
+  max-height: 50px;
 }
 
 #maincontainer{
   display: grid;
   max-height: 100%;
   overflow: hidden;
-  grid-template: 50px 1fr 50px / 10% 1fr 10%;
+  grid-template: 10% 1fr 10% / 10% 1fr 10%;
   background-color: royalblue;
 }
 
 .formcontainer{
   border-radius: 20px;
-  width: 60%;
+  width: 55%;
   margin: 0 auto;
   padding: 5%;
-  grid-area: 1/2/3/3;
+  grid-area: 2/2/3/3;
   background-color:#d3e6ff;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   -webkit-box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
   -moz-box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
   box-shadow: -8px -9px 97px 2px rgba(0,0,0,0.53);
-  /* background-color: ; */
 }
 
 .form{
@@ -66,21 +70,6 @@ html, body, #root, .App {
   border-width: 0;
   margin: 10px 0;
   width: 100%;
-}
-
-@media only screen and (max-width:600px){
-  .formcontainer{
-    background: rgb(255, 255, 255);
-    border-radius: 0;
-    grid-area: 1/1/4/4;
-    width: 100%;
-  }
-
-  .input{
-    border: rgb(170, 170, 170) solid 1px;
-    border-radius: 2px;
-  }
-
 }
 
 .link, .link:visited{
@@ -104,8 +93,8 @@ html, body, #root, .App {
 }
 
 .sidebarChat{
-  padding: 10px 0px 40px 0px;
   min-width: 0;
+  min-height: 0;
   grid-area: 1/1/2/2;
   background-color: #0048AA;
   border-radius: 20px 0px 0px 20px;
@@ -114,34 +103,34 @@ html, body, #root, .App {
   display: flex;
   flex-direction: column;
 }
-.sidebarChat_header{
+.sidebarChat_header, .sidebarChat_footer{
   display: flex;
+  height: 10%;
   justify-content: flex-end;
-  padding: 5px;
-  padding-right: 15px;
+  align-items: center;
+  padding: 2% 7% 2% 0;
 }
+
 .sidebarChat_btn{
-  background-color: transparent;
   border: none;
   outline: none;
   width: 30px;
-  
+  height: 30px;
 }
 
 .Chat_Container{
   grid-area: 2/2/3/3;
   display: grid;
   grid-template: 1fr /1fr 3fr;
-  /* max-height: 100%; */
+  min-width: 0;
   overflow: hidden;
 }
 
 .chatbox{
-  padding: 40px;
-  padding-bottom: 20px;
   min-height: 0;
+  min-width: 0;
   grid-area: 1/2/2/3;
-  background-color: rgba(255, 255, 255, 1.1);
+  background-color: rgba(255, 255, 255, 1.0);
   border-radius: 0px 20px 20px 0px;
   border: black solid 1px;
   border-left: transparent;
@@ -152,24 +141,23 @@ html, body, #root, .App {
   /* Y-axis */
   /* align-items: stretch; */
 }
-::-webkit-scrollbar {
-  display: none;
-}
 
-.msgBox{
-  flex-grow: 1;
+.preventColumnBlowOut{
   overflow: scroll;
-  /* max-height: 90%; */
+}
+.messagesContainer{
+  padding: 0 3%;
 }
 .InputContainer{
   position: relative;
-  margin-top: 10px;
   background-color:rgb(213, 213, 213);
   display: flex;
-  /* padding: 15px; */
-  border-style: none;
-  border-radius: 22px;
-  height: 50px;
+  align-items: center;
+  /* flex-direction: row; */
+  /* border: none; */
+  border-top: black solid 1px;
+  border-radius: 0 0 22px 0;
+  height: 25%;
 }
 .typingBox:focus{
   outline: none;
@@ -177,31 +165,23 @@ html, body, #root, .App {
 .typingBox{
   background-color: rgb(213, 213, 213);
   font-size: larger;
+  flex-grow: 1;
   padding: 15px;
-  width: 90%;
   border-style: none;
   border-radius: 22px;
   height: 50px;
 }
 
 .chatbtn{
-  /* background-color: rgb(213, 213, 213); */
-  position: absolute;
-  right: 0;
+  margin-right: 2%;
   border-radius: 100%;
-  height: 50px;
-  border: rgb(179, 179, 179) solid 1px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
   outline: none;
 }
 .chatbtn:hover{
-  color: #57c1eb;
   background-color: rgba(255, 255, 255, 1);
   font-weight: bold;
-  border-radius: 100%;
-  height: 50px;
-  border: rgb(179, 179, 179) solid 1px;
-  width: 50px;
 }
 
 .message_sender{
@@ -212,8 +192,10 @@ html, body, #root, .App {
 .message_content{
   display: inline-block;
   text-align: justify;
+  word-wrap: break-word;
   background-color: rgb(206, 206, 206);
-  max-width: 80%;
+  max-width: 70%;
+  
   padding: 2px 11px 2px 11px;
   border : rgba(0, 0, 0, 0.084) solid 1px;
   border-radius: 22px;
@@ -243,6 +225,7 @@ html, body, #root, .App {
   height: 100px;
   overflow: hidden;
   opacity: 60%;
+  word-wrap: break-word;
   text-overflow: ellipsis;
   /* transition-duration: 0.2s; */
 }
@@ -264,8 +247,54 @@ html, body, #root, .App {
   font-weight: bold;
 }
 
-.group_box_new_msg{
+/* .group_box_new_msg{
   overflow: hidden;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
   height: 100%;
+} */
+
+
+@media only screen and (max-width:800px),(max-height:500px){
+  .formcontainer{
+    width: 80%;
+  }
+  #maincontainer{
+    /* grid-template: 1fr/ 30% 1fr; */
+    background-color: royalblue;
+  }
+  .Chat_Container{
+    grid-area: 1 / 1 /span 3/span 3;
+    display: grid;
+    grid-template: 1fr /2fr 5fr;
+    overflow: hidden;
+  }
+  .chatbox{
+    grid-area: 1/2/2/3;
+    border: none;
+    border-radius: 0;
+  }
+  .InputContainer{
+    border-radius: 0;
+    height: 28.5%;
+  }
+  .sidebarChat{
+    border: none;
+    border-radius: 0;
+  }
 }
 
+@media only screen and (max-width:600px){
+  .formcontainer{
+    background: rgb(255, 255, 255);
+    border-radius: 0;
+    grid-area: 1/1/4/4;
+    width: 100%;
+  }
+
+  .input{
+    border: rgb(170, 170, 170) solid 1px;
+    border-radius: 2px;
+  }
+
+}
