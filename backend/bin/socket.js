@@ -36,7 +36,7 @@ io.on('connection',(socket)=>{
 
     })
 
-    socket.on('sendMessage',async (payload,callback)=>{
+    socket.on('sendMessage',async (payload)=>{
         
         if(payload.channel){
 
@@ -46,7 +46,6 @@ io.on('connection',(socket)=>{
 
             io.to(payload.channel).emit('message',message)
 
-            callback()
         }
         
     })

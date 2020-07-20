@@ -15,11 +15,15 @@ const ChatBox = ({hasMore,fetchMoreMessagesForChat, needToScroll, user, messages
       mesRef.current.scrollTop = mesRef.current.scrollHeight;
   }
   const onEnter = e =>{
-    if(e.charCode === 13 && textMsg !== '') sendMessage(textMsg) 
+    if(e.charCode === 13 && textMsg !== ''){
+      sendMessage(textMsg)
+      setTextMsg('')
+    }
   }
 
   const onSubmit = () =>{
       if(textMsg) sendMessage(textMsg)
+      setTextMsg('')
   }
 
   const handleScroll = e =>{
@@ -33,7 +37,7 @@ const ChatBox = ({hasMore,fetchMoreMessagesForChat, needToScroll, user, messages
   
   return (
     <div className="chatbox">
-        <div className="msgBox" onScroll={handleScroll} ref={mesRef}>
+        <div className="preventColumnBlowOut messagesContainer" onScroll={handleScroll} ref={mesRef}>
           {messages.map(({_id,author,message}) => (<Message key={_id} user={user} sender={author} message={message} />))}
         </div>
         <div className="InputContainer">
@@ -42,7 +46,7 @@ const ChatBox = ({hasMore,fetchMoreMessagesForChat, needToScroll, user, messages
                 onChange={e=>setTextMsg(e.target.value)} 
                 type="text" className="typingBox" 
             />
-            <button className="chatbtn" onClick={onSubmit}> Send </button>
+            <img className="chatbtn"  src={textMsg ? "/active_send.png" : "/send.png"} onClick={onSubmit} />
         </div>
     </div>
   );

@@ -22,12 +22,13 @@ const SignUp = ({loggedIn}) => {
         <FormBase 
         title="Sign Up"
         link="/"
-        msg_link="Log In?"
+        msg_link=" Log In."
         username={username}
         password={password}
         handleSubmit={handleSubmit}
         setUsername={setUsername}
-        setPassword={setPassword} />
+        setPassword={setPassword} 
+        msg_account={"Have an account?"}/>
       </>
     );
 }
