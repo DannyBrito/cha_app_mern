@@ -168,8 +168,8 @@ html, body, #root, .App {
 .typingBox{
   background-color: rgb(213, 213, 213);
   font-size: larger;
-  /* flex-grow: 1; */
-  min-width: 90%;
+  flex-grow: 1;
+  /* min-width: 90%; */
   margin: 1%;
   padding: 2%;
   border: grey solid 1px;
@@ -313,4 +313,21 @@ html, body, #root, .App {
     height: 50%;
   }
 
+}
+
+#fileSelect{
+  z-index: -1;
+  height: 0px;
+  width: 0;
+}
+#labelFile{
+  /* background-color: rebeccapurple; */
+  height: 30px;
+  width: 30px;
+  margin: 0 5px;
+}
+
+#labelFile img{
+  height: 35px;
+  width: 35px;
 }
