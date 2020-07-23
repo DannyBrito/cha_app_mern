@@ -67,9 +67,9 @@ const Chat = ({id,username,socket}) => {
     socket.emit('self_channel',{id})
     socket.on('message',handleMessageReceivedOnSocket)
     socket.on('new_channel',requestUserChatsInfo)
-    socket.on('binaryData',(data)=>{
+    socket.on('binaryData',({data,user})=>{
       const blob = String.fromCharCode.apply(null,new Uint8Array(data))
-      setImage('data:image/png;base64,' + btoa(blob))
+      setImage('data:image/jpeg;base64,' + btoa(blob))
     })
 
     return () =>{
@@ -117,7 +117,7 @@ const Chat = ({id,username,socket}) => {
   }
 
   const sendBinaryData = (data) =>{
-    socket.emit('sendBinaryData',data)
+    socket.emit('sendBinaryData',{data, author:id, channel:currentCh})
   }
 
   /* -------- MODAL CONTROL -------- */
@@ -156,7 +156,7 @@ const Chat = ({id,username,socket}) => {
       <ChatSideBar currentCh={currentCh} changeCurrentChat={updateChannel} 
       openModal={openModal} latestMessagePerChat={latestMessagePerChat} 
       channels={allSubChannels} id={id} />
-      <img src={image} />
+      {image &&<img src={image} style={{height:'300px',width:'300px'}}/>}
       <ChatBox
         sendBinaryData={sendBinaryData}
         hasMore={channelMessagesCompleted()}

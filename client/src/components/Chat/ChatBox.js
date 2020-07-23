@@ -19,13 +19,12 @@ const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll,
       sendMessage(textMsg)
       setTextMsg('')
     }
-    else if(fileInput){
-      sendBinaryData(fileInput)
-    }
+    else if (fileInput) sendBinaryData(fileInput)
   }
 
   const onSubmit = () =>{
       if(textMsg) sendMessage(textMsg)
+      else if (fileInput) sendBinaryData(fileInput)
       setTextMsg('')
   }
 
@@ -48,7 +47,7 @@ const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll,
           {messages.map(({_id,author,message}) => (<Message key={_id} user={user} sender={author} message={message} />))}
         </div>
         <div className="InputContainer">
-            <input onChange={handleFileInput} name="fileSelect" id="fileSelect" type="file" />
+            <input onChange={handleFileInput}  accept=".png, .jpg, .jpeg" name="fileSelect" id="fileSelect" type="file" />
             <label htmlFor="fileSelect" id="labelFile">
               <img src={fileInput? "attach-icon-active.png":"/attach-icon.png"}/>
             </label>

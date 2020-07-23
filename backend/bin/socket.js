@@ -50,9 +50,9 @@ io.on('connection',(socket)=>{
         
     })
 
-    socket.on('sendBinaryData', (payload)=>{
-        console.log(payload)
-        io.emit('binaryData',payload)
+    socket.on('sendBinaryData', ({data, author, channel})=>{
+        console.log(data)
+        io.to(channel).emit('binaryData',{author,data,author})
     })
 
     socket.on('disconnect',()=>{
