@@ -1,9 +1,12 @@
 import React, {useRef,useEffect,useState} from 'react';
 import Message from './Message';
+import Image from './Image';
+import uuid from 'react-uuid'
 
 const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll, user, messages, sendMessage}) => {
 
   const mesRef = useRef()
+
   const [textMsg,setTextMsg] = useState('')
   const [fileInput, setFileInput] = useState('')
   useEffect(()=>{
@@ -44,7 +47,10 @@ const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll,
   return (
     <div className="chatbox">
         <div className="preventColumnBlowOut messagesContainer" onScroll={handleScroll} ref={mesRef}>
-          {messages.map(({_id,author,message}) => (<Message key={_id} user={user} sender={author} message={message} />))}
+          {messages.map(({_id,author,message,type,url}) =>{
+            if(type) return <Image src={url} key={uuid()} user={user} sender={author}/>
+            return <Message key={_id} user={user} sender={author} message={message} /> 
+          })}
         </div>
         <div className="InputContainer">
             <input onChange={handleFileInput}  accept=".png, .jpg, .jpeg" name="fileSelect" id="fileSelect" type="file" />

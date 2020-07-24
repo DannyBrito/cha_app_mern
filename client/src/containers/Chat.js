@@ -13,8 +13,6 @@ const Chat = ({id,username,socket}) => {
   const isChatMounted = useRef(true)
   const needToScroll = useRef(false)
 
-  const [image, setImage] = useState('')
-
   const [currentCh, setCurrentCh] = useState('LobbyGeneral')
 
   const [messages,setMessages] = useState({})
@@ -67,9 +65,10 @@ const Chat = ({id,username,socket}) => {
     socket.emit('self_channel',{id})
     socket.on('message',handleMessageReceivedOnSocket)
     socket.on('new_channel',requestUserChatsInfo)
-    socket.on('binaryData',({data,user})=>{
-      const blob = String.fromCharCode.apply(null,new Uint8Array(data))
-      setImage('data:image/jpeg;base64,' + btoa(blob))
+    socket.on('binaryData',(imageObject)=>{
+      const blob = String.fromCharCode.apply(null,new Uint8Array(imageObject.data))
+      imageObject.url = 'data:image/jpeg;base64,' + btoa(blob)
+      handleMessageReceivedOnSocket(imageObject)
     })
 
     return () =>{
@@ -156,7 +155,6 @@ const Chat = ({id,username,socket}) => {
       <ChatSideBar currentCh={currentCh} changeCurrentChat={updateChannel} 
       openModal={openModal} latestMessagePerChat={latestMessagePerChat} 
       channels={allSubChannels} id={id} />
-      {image &&<img src={image} style={{height:'300px',width:'300px'}}/>}
       <ChatBox
         sendBinaryData={sendBinaryData}
         hasMore={channelMessagesCompleted()}
