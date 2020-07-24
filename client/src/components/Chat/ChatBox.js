@@ -9,6 +9,9 @@ const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll,
 
   const [textMsg,setTextMsg] = useState('')
   const [fileInput, setFileInput] = useState('')
+  
+  const refFileInput = useRef()
+
   useEffect(()=>{
     mesRef.current.reachTop = false
     if(needToScroll && messages.length) scrollToBottom()
@@ -22,13 +25,19 @@ const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll,
       sendMessage(textMsg)
       setTextMsg('')
     }
-    else if (fileInput) sendBinaryData(fileInput)
+    else if (fileInput && e.charCode === 13 && textMsg !== '') {
+      sendBinaryData(fileInput)
+      setFileInput('')
+      refFileInput.current.value = ''
+    }
   }
-
+  
   const onSubmit = () =>{
-      if(textMsg) sendMessage(textMsg)
-      else if (fileInput) sendBinaryData(fileInput)
-      setTextMsg('')
+    if(textMsg && !fileInput) sendMessage(textMsg)
+    else if (fileInput) sendBinaryData(fileInput)
+    setTextMsg('')
+    setFileInput('')
+    refFileInput.current.value = ''
   }
 
   const handleScroll = e =>{
@@ -53,7 +62,7 @@ const ChatBox = ({sendBinaryData,hasMore,fetchMoreMessagesForChat, needToScroll,
           })}
         </div>
         <div className="InputContainer">
-            <input onChange={handleFileInput}  accept=".png, .jpg, .jpeg" name="fileSelect" id="fileSelect" type="file" />
+            <input ref={refFileInput} onChange={handleFileInput}  accept=".png, .jpg, .jpeg" name="fileSelect" id="fileSelect" type="file" />
             <label htmlFor="fileSelect" id="labelFile">
               <img src={fileInput? "attach-icon-active.png":"/attach-icon.png"}/>
             </label>

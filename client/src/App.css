@@ -149,6 +149,7 @@ html, body, #root, .App {
 .messagesContainer{
   padding: 0 3%;
   min-height: 90%;
+  padding-bottom: 2%;
 }
 .InputContainer{
   position: relative;
@@ -200,7 +201,9 @@ html, body, #root, .App {
   word-wrap: break-word;
   background-color: rgb(206, 206, 206);
   max-width: 70%;
-  padding: 2px 11px 2px 11px;
+  overflow: hidden;
+  /* padding: 2px 11px 2px 11px; */
+  padding: 5px;
   border : rgba(0, 0, 0, 0.084) solid 1px;
   border-radius: 22px;
   /* background-color:rgb(247, 246, 246); */
@@ -330,4 +333,11 @@ html, body, #root, .App {
 #labelFile img{
   height: 35px;
   width: 35px;
+}
+
+.imageMessage{
+  height: auto;
+  max-height: 300px;
+  width: auto;
+  border-radius: 22px;
 }

@@ -15,7 +15,7 @@ const Image = ({src,user,sender}) =>{
     return (
         <div className={setClassNameBasedOwnership('message_box','own_message')}>
             <div className={setClassNameBasedOwnership('message_content','blue_bbl')}>
-                <img src={src} style={{height:'300px',width:'300px'}} />
+                <img src={src} className="imageMessage"/>
             </div>
         </div>
     )
