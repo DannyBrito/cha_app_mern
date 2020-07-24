@@ -65,6 +65,11 @@ const Chat = ({id,username,socket}) => {
     socket.emit('self_channel',{id})
     socket.on('message',handleMessageReceivedOnSocket)
     socket.on('new_channel',requestUserChatsInfo)
+    socket.on('binaryData',(imageObject)=>{
+      const blob = String.fromCharCode.apply(null,new Uint8Array(imageObject.data))
+      imageObject.url = 'data:image/jpeg;base64,' + btoa(blob)
+      handleMessageReceivedOnSocket(imageObject)
+    })
 
     return () =>{
       isChatMounted.current = false
@@ -107,7 +112,11 @@ const Chat = ({id,username,socket}) => {
 
   // Handles message to be sent through socket
   const sendMessage = (message) =>{
-      socket.emit('sendMessage',{message, author:id, channel:currentCh})
+    socket.emit('sendMessage',{message, author:id, channel:currentCh})
+  }
+
+  const sendBinaryData = (data) =>{
+    socket.emit('sendBinaryData',{data, author:id, channel:currentCh})
   }
 
   /* -------- MODAL CONTROL -------- */
@@ -146,7 +155,8 @@ const Chat = ({id,username,socket}) => {
       <ChatSideBar currentCh={currentCh} changeCurrentChat={updateChannel} 
       openModal={openModal} latestMessagePerChat={latestMessagePerChat} 
       channels={allSubChannels} id={id} />
-      <ChatBox  
+      <ChatBox
+        sendBinaryData={sendBinaryData}
         hasMore={channelMessagesCompleted()}
         fetchMoreMessagesForChat={fetchMoreMessagesForChat}
         user={{username,id}} sendMessage={sendMessage} 

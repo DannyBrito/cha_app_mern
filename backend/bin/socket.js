@@ -50,6 +50,11 @@ io.on('connection',(socket)=>{
         
     })
 
+    socket.on('sendBinaryData', ({data, author, channel})=>{
+        console.log(data)
+        io.to(channel).emit('binaryData',{author,data,author})
+    })
+
     socket.on('disconnect',()=>{
 
         console.log('User had left')
