@@ -1,7 +1,5 @@
 # SimpleChat 💭 - App
-[Client](https://github.com/DannyBrito/Eclone-client)
 > A real-time chat app that allows quick user communication.
-
 
 ## Features:
 An user is able to:
